@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALK BACK 💬</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA4xeVcHisW_-FB3zHeLxzZtFt9ChpQjEY",
+    authDomain: "grammarblitz-12d4d.firebaseapp.com",
+    databaseURL: "https://grammarblitz-12d4d-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "grammarblitz-12d4d",
+    storageBucket: "grammarblitz-12d4d.firebasestorage.app",
+    messagingSenderId: "197853726033",
+    appId: "1:197853726033:web:3ecc65d3b13dcc3cfe7f70"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  window._db = db;
+  window._ref = ref;
+  window._set = set;
+  window._get = get;
+  window._onValue = onValue;
+  window._update = update;
+  window._remove = remove;
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<style>
+  :root {
+    --pink:   #ff6eb4;
+    --mint:   #5ee8c0;
+    --yellow: #ffe045;
+    --lavender: #c9b8ff;
+    --coral:  #ff7b5c;
+    --ink:    #1a1a1a;
+    --white:  #ffffff;
+    --offwhite: #fffdf5;
+    --border: 3px solid #1a1a1a;
+    --shadow: 5px 5px 0 #1a1a1a;
+    --shadow-sm: 3px 3px 0 #1a1a1a;
+    --radius: 16px;
+    --ff-display: 'Fredoka One', cursive;
+    --ff-mono: 'Space Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--offwhite);
+    color: var(--ink);
+    font-family: var(--ff-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── LANDING ── */
+  #screen-landing {
+    background: var(--yellow);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .landing-deco {
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .d1 { top: 5%; left: 5%; transform: rotate(-15deg); }
+  .d2 { top: 10%; right: 8%; transform: rotate(20deg); }
+  .d3 { bottom: 12%; left: 10%; transform: rotate(10deg); }
+  .d4 { bottom: 8%; right: 6%; transform: rotate(-20deg); }
+  .d5 { top: 50%; left: 2%; transform: rotate(5deg); }
+  .d6 { top: 40%; right: 2%; transform: rotate(-10deg); }
+
+  .landing-card {
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 8px 8px 0 var(--ink);
+    border-radius: var(--radius);
+    padding: 3rem 2.5rem;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .landing-sticker {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .landing-title {
+    font-family: var(--ff-display);
+    font-size: clamp(3.5rem, 10vw, 5.5rem);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .landing-title .pop { color: var(--pink); }
+
+  .landing-sub {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666;
+    margin: 0.8rem 0 2rem;
+  }
+
+  .role-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .role-btn {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    padding: 0.9rem 1.5rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: var(--shadow);
+    letter-spacing: 1px;
+  }
+  .role-btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
+  .role-btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+  .role-btn.teacher { background: var(--pink); color: white; }
+  .role-btn.student { background: var(--mint); color: var(--ink); }
+
+  /* ── SETUP ── */
+  #screen-setup {
+    background: var(--mint);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .setup-card {
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 8px 8px 0 var(--ink);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    max-width: 380px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .setup-title {
+    font-family: var(--ff-display);
+    font-size: 2.5rem;
+    color: var(--ink);
+  }
+
+  .setup-sub {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+  }
+
+  .cute-input {
+    font-family: var(--ff-display);
+    font-size: 2rem;
+    letter-spacing: 6px;
+    text-align: center;
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem 1rem;
+    background: var(--offwhite);
+    width: 100%;
+    text-transform: uppercase;
+    outline: none;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.1s;
+  }
+  .cute-input:focus { box-shadow: 5px 5px 0 var(--pink); border-color: var(--pink); }
+
+  .cute-btn {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    padding: 0.8rem 1.5rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  .cute-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .cute-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 var(--ink); }
+  .cute-btn.pink  { background: var(--pink); color: white; }
+  .cute-btn.yellow { background: var(--yellow); color: var(--ink); }
+  .cute-btn.lavender { background: var(--lavender); color: var(--ink); }
+  .cute-btn.coral { background: var(--coral); color: white; }
+  .cute-btn.mint  { background: var(--mint); color: var(--ink); }
+  .cute-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: var(--shadow); }
+
+  .error-msg {
+    font-size: 0.7rem;
+    color: var(--coral);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .hidden { display: none !important; }
+
+  /* ── TEACHER VIEW ── */
+  #screen-teacher {
+    background: var(--offwhite);
+    flex-direction: column;
+  }
+
+  .teacher-header {
+    background: var(--pink);
+    border-bottom: var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .t-logo {
+    font-family: var(--ff-display);
+    font-size: 2rem;
+    color: white;
+    letter-spacing: 2px;
+  }
+  .t-logo .pop { color: var(--yellow); }
+
+  .room-badge {
+    background: var(--white);
+    border: var(--border);
+    border-radius: 12px;
+    padding: 0.4rem 1rem;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .room-badge-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #888;
+  }
+  .room-badge-code {
+    font-family: var(--ff-display);
+    font-size: 1.6rem;
+    color: var(--pink);
+    letter-spacing: 4px;
+    line-height: 1.1;
+  }
+
+  .teacher-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .teacher-body { grid-template-columns: 1fr; }
+  }
+
+  /* scenario card */
+  .scenario-card {
+    background: var(--yellow);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .scenario-card::after {
+    content: '💬';
+    font-size: 5rem;
+    position: absolute;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  .scenario-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+  .scenario-text {
+    font-family: var(--ff-display);
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .scenario-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .scenario-role {
+    background: var(--white);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* scaffold */
+  .scaffold-toggle {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--lavender);
+    border: var(--border);
+    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s;
+    align-self: flex-start;
+  }
+  .scaffold-toggle:hover { transform: translate(-1px,-1px); }
+
+  .scaffold-panel {
+    display: none;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem;
+  }
+  .scaffold-panel.open { display: block; }
+
+  .scaffold-cat {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--pink);
+    margin: 0.7rem 0 0.3rem;
+    font-weight: 700;
+  }
+  .scaffold-cat:first-child { margin-top: 0; }
+
+  .scaffold-phrases {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .scaffold-phrases li {
+    background: var(--offwhite);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* round controls */
+  .round-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .ctrl-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #888;
+  }
+
+  /* timer */
+  .timer-block {
+    background: var(--lavender);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.2rem;
+    text-align: center;
+  }
+
+  .timer-display {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 10vw, 7rem);
+    line-height: 1;
+    color: var(--ink);
+    transition: color 0.3s;
+    letter-spacing: 2px;
+  }
+  .timer-display.warn { color: var(--coral); }
+
+  .timer-controls {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+
+  .t-btn {
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border: var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+    background: var(--white);
+  }
+  .t-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+  .t-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+  .t-btn.go { background: var(--mint); }
+
+  /* results */
+  .results-panel {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .results-title {
+    font-family: var(--ff-display);
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .voter-count {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+  }
+
+  .vote-status {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.3rem 0.8rem;
+    border: var(--border);
+    border-radius: 20px;
+    display: inline-block;
+    align-self: flex-start;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .vote-status.closed { background: #eee; color: #888; }
+  .vote-status.open { background: var(--mint); color: var(--ink); animation: blink 1.2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  .criterion {
+    background: var(--offwhite);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 0.7rem;
+  }
+
+  .criterion-name {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .stars-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .star-pill {
+    height: 26px;
+    min-width: 32px;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-family: var(--ff-mono);
+    border-radius: 20px;
+    border: 2px solid var(--ink);
+    transition: all 0.2s;
+    background: #eee;
+  }
+  .star-pill.s1 { background: #f3f3f3; }
+  .star-pill.s2 { background: var(--lavender); }
+  .star-pill.s3 { background: #b8f0e0; }
+  .star-pill.s4 { background: var(--mint); }
+  .star-pill.s5 { background: var(--pink); color: white; }
+
+  .star-count {
+    font-size: 0.6rem;
+    color: #888;
+    min-width: 1.5rem;
+  }
+
+  .avg-score {
+    font-family: var(--ff-display);
+    font-size: 1.8rem;
+    color: var(--pink);
+    margin-left: auto;
+  }
+
+  /* ── STUDENT VIEW ── */
+  #screen-student {
+    background: var(--offwhite);
+  }
+
+  .student-header {
+    background: var(--mint);
+    border-bottom: var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .s-logo {
+    font-family: var(--ff-display);
+    font-size: 1.8rem;
+    color: var(--ink);
+  }
+  .s-logo .pop { color: var(--pink); }
+
+  .s-room {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #555;
+    text-align: right;
+  }
+  .s-room strong {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    color: var(--ink);
+    display: block;
+    line-height: 1.1;
+  }
+
+  .student-body {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 460px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* join */
+  .join-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  .join-title {
+    font-family: var(--ff-display);
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .join-title .pop { color: var(--pink); }
+
+  .join-sub {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888;
+  }
+
+  /* waiting */
+  .waiting-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .waiting-blob {
+    width: 100px;
+    height: 100px;
+    background: var(--yellow);
+    border: var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    box-shadow: var(--shadow);
+    animation: float 2.5s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .waiting-msg {
+    font-family: var(--ff-display);
+    font-size: 1.8rem;
+    color: var(--ink);
+  }
+
+  .waiting-sub {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #aaa;
+  }
+
+  /* vote form */
+  .vote-form { display: flex; flex-direction: column; gap: 1rem; }
+
+  .vote-title {
+    font-family: var(--ff-display);
+    font-size: 2rem;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .vote-title .pop { color: var(--pink); }
+
+  .vote-criterion {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem;
+  }
+
+  .vc-name {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888;
+    margin-bottom: 0.7rem;
+  }
+
+  .star-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .star-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.8rem;
+    background: var(--offwhite);
+    border: var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    color: #ccc;
+  }
+  .star-btn:hover { transform: scale(1.15) rotate(-5deg); }
+  .star-btn.lit { color: #f5a623; background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
+
+  .submit-vote-btn {
+    font-family: var(--ff-display);
+    font-size: 1.6rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--pink);
+    color: white;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  .submit-vote-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .submit-vote-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 var(--ink); }
+  .submit-vote-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* voted */
+  .voted-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .voted-blob {
+    width: 110px;
+    height: 110px;
+    background: var(--mint);
+    border: var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    box-shadow: var(--shadow);
+    animation: pop-in 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+  @keyframes pop-in { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+  .voted-msg {
+    font-family: var(--ff-display);
+    font-size: 2.5rem;
+    color: var(--ink);
+  }
+  .voted-sub {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="screen-landing" class="screen active">
+  <span class="landing-deco d1">✈️</span>
+  <span class="landing-deco d2">💌</span>
+  <span class="landing-deco d3">🗺️</span>
+  <span class="landing-deco d4">🌸</span>
+  <span class="landing-deco d5">🤝</span>
+  <span class="landing-deco d6">💬</span>
+
+  <div class="landing-card">
+    <span class="landing-sticker">🎭</span>
+    <div class="landing-title">TALK<span class="pop">BACK</span></div>
+    <div class="landing-sub">relationships · communication · travel</div>
+    <div class="role-btns">
+      <button class="role-btn teacher" onclick="showScreen('screen-setup')">👩‍🏫 I'm the Teacher</button>
+      <button class="role-btn student" onclick="showScreen('screen-student')">🙋 I'm a Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER SETUP -->
+<div id="screen-setup" class="screen" style="align-items:center;justify-content:center;background:var(--mint);padding:2rem;">
+  <div class="setup-card">
+    <span style="font-size:2.5rem">🏫</span>
+    <div class="setup-title">Set Up Room</div>
+    <div class="setup-sub">Choose a 4-letter room code</div>
+    <input class="cute-input" id="setup-code-input" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
+    <div class="error-msg hidden" id="setup-error"></div>
+    <button class="cute-btn pink" onclick="setupRoom()">Create Room ✨</button>
+    <button class="cute-btn yellow" style="font-size:1rem;" onclick="showScreen('screen-landing')">← Back</button>
+  </div>
+</div>
+
+<!-- TEACHER VIEW -->
+<div id="screen-teacher" class="screen">
+  <div class="teacher-header">
+    <div class="t-logo">TALK<span class="pop">BACK</span> 🎭</div>
+    <div class="room-badge">
+      <div class="room-badge-label">Room Code</div>
+      <div class="room-badge-code" id="teacher-room-display">----</div>
+    </div>
+  </div>
+
+  <div class="teacher-body">
+    <!-- LEFT -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="scenario-card">
+        <div class="scenario-label">📋 Current Scenario</div>
+        <div class="scenario-text" id="scenario-text">Press NEW SCENARIO to begin ✨</div>
+        <div class="scenario-roles" id="scenario-roles"></div>
+      </div>
+
+      <button class="scaffold-toggle" onclick="toggleScaffold()">🗣️ Language Scaffold</button>
+      <div class="scaffold-panel" id="scaffold-panel">
+        <div class="scaffold-cat">💭 Expressing feelings</div>
+        <ul class="scaffold-phrases">
+          <li>To be honest…</li><li>I feel like…</li><li>What bothers me is…</li><li>It's not that I don't…</li>
+        </ul>
+        <div class="scaffold-cat">🤔 Disagreeing politely</div>
+        <ul class="scaffold-phrases">
+          <li>I see your point, but…</li><li>That's fair, although…</li><li>I'd actually argue…</li><li>Not necessarily…</li>
+        </ul>
+        <div class="scaffold-cat">❓ Asking for clarification</div>
+        <ul class="scaffold-phrases">
+          <li>What exactly do you mean?</li><li>Could you say more about…?</li><li>So you're saying…?</li><li>Sorry, just to check…</li>
+        </ul>
+        <div class="scaffold-cat">💡 Making suggestions</div>
+        <ul class="scaffold-phrases">
+          <li>What if we…?</li><li>How about…?</li><li>Why don't we just…</li><li>One option would be…</li>
+        </ul>
+        <div class="scaffold-cat">⏳ Buying time</div>
+        <ul class="scaffold-phrases">
+          <li>That's a good point…</li><li>Let me think about that…</li><li>Well, the thing is…</li><li>OK so…</li>
+        </ul>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div class="ctrl-label">Round Controls</div>
+        <button class="cute-btn yellow" onclick="newRound()">⟳ New Scenario</button>
+        <button class="cute-btn mint" id="btn-open-vote" onclick="openVoting()">▶ Open Voting</button>
+        <button class="cute-btn lavender" id="btn-close-vote" onclick="closeVoting()" disabled>■ Close Voting</button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="timer-block">
+        <div class="timer-display" id="timer-display">3:00</div>
+        <div class="timer-controls">
+          <button class="t-btn go" onclick="startTimer(180)">⏱ Prep 3:00</button>
+          <button class="t-btn go" onclick="startTimer(240)">🎬 Perform 4:00</button>
+          <button class="t-btn" onclick="pauseTimer()">⏸</button>
+          <button class="t-btn" onclick="resetTimer()">↺</button>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="results-header">
+          <div class="results-title">📊 Live Results</div>
+          <div class="voter-count" id="voter-count">0 votes</div>
+        </div>
+        <div class="vote-status closed" id="vote-status-badge">Voting Closed</div>
+        <div id="criteria-results"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT VIEW -->
+<div id="screen-student" class="screen">
+  <div class="student-header">
+    <div class="s-logo">TALK<span class="pop">BACK</span></div>
+    <div class="s-room">Room<strong id="student-room-display">----</strong></div>
+  </div>
+
+  <div class="student-body">
+
+    <div class="join-form" id="student-join">
+      <span style="font-size:3rem">🎭</span>
+      <div class="join-title">Join a <span class="pop">Room!</span></div>
+      <div class="join-sub">Enter your teacher's room code</div>
+      <input class="cute-input" id="join-code-input" maxlength="4" placeholder="ABCD" oninput="this.value=this.value.toUpperCase()" style="max-width:220px;">
+      <div class="error-msg hidden" id="join-error"></div>
+      <button class="cute-btn pink" onclick="joinRoom()" style="max-width:220px;">Join ✨</button>
+    </div>
+
+    <div class="waiting-state hidden" id="student-waiting">
+      <div class="waiting-blob">⏳</div>
+      <div class="waiting-msg">Waiting for voting…</div>
+      <div class="waiting-sub">Your teacher will open voting soon!</div>
+    </div>
+
+    <div class="vote-form hidden" id="student-vote">
+      <div class="vote-title">Rate the <span class="pop">Dialogue!</span> ⭐</div>
+      <div id="student-criteria-blocks"></div>
+      <div class="error-msg hidden" id="vote-error"></div>
+      <button class="submit-vote-btn" id="submit-vote-btn" onclick="submitVote()">Submit! 🚀</button>
+    </div>
+
+    <div class="voted-state hidden" id="student-voted">
+      <div class="voted-blob">✅</div>
+      <div class="voted-msg">You voted! 🎉</div>
+      <div class="voted-sub">Waiting for the next round…</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SCENARIOS = [
+  { text: "You're travelling together and have just missed your train. One of you wants to wait for the next one; the other wants to book a taxi. You've only got €15 left between you.", roles: ["Traveller A — practical, stressed", "Traveller B — optimistic, impulsive"] },
+  { text: "You're sharing a hostel room with a stranger who keeps making noise late at night. It's your last night and you have an early flight. Try to resolve it.", roles: ["Traveller (your room)", "The other guest"] },
+  { text: "You and a close friend had an argument yesterday about something small. Now you're both on a long bus journey together. Someone has to break the silence.", roles: ["Person A — not sure they were wrong", "Person B — definitely not apologising first"] },
+  { text: "You're at the airport. Your partner thinks the relationship is moving too fast. You have four hours until your flight to start somewhere new together.", roles: ["Person A — wants to go", "Person B — having second thoughts"] },
+  { text: "You've been messaging someone for three months but never met in person. You're finally at the same café. Things are slightly different from what you expected.", roles: ["Person who suggested meeting", "Person who is surprised"] },
+  { text: "You're trying to book a double room at a hotel but the receptionist says there's only a single available — and it's the last room in the city tonight.", roles: ["The couple", "The receptionist"] },
+  { text: "Your best friend forgot your birthday because they were too busy. They've just remembered, three days later, and want to make it up to you.", roles: ["The friend who forgot", "The one who's hurt"] },
+  { text: "You're both backpacking and disagree on the plan: one wants a beach week, the other wants to see mountains. You've got five days and limited budget.", roles: ["Beach person", "Mountains person"] },
+  { text: "You're at border control. The officer is asking confusing questions about the purpose of your visit. Your travel companion is giving different answers from you.", roles: ["Traveller A", "Border control officer"] },
+  { text: "You fell asleep on a train and woke up at the wrong stop. Your phone is dead. A stranger is the only person on the platform who speaks some English.", roles: ["Lost traveller", "Local stranger"] },
+  { text: "You borrowed money from a friend for a trip and haven't paid it back yet. They've just brought it up in a group chat. You're meeting in person to sort it out.", roles: ["The borrower", "The friend who lent the money"] },
+  { text: "You and a friend are travelling together but communicate very differently — one needs to talk everything through; the other wants to figure things out alone.", roles: ["The talker", "The one who needs space"] }
+];
+
+const CRITERIA = [
+  { id: "c1", name: "Did they stay in character?" },
+  { id: "c2", name: "Did they use linking/response language?" },
+  { id: "c3", name: "Was the exchange convincing?" }
+];
+
+let currentRoom = null;
+let isTeacher = false;
+let timerInterval = null;
+let timerSeconds = 180;
+let timerRunning = false;
+let studentVotes = {};
+let hasVoted = false;
+let currentRound = 0;
+
+function waitForFirebase(fn) {
+  if (window._firebaseReady) fn();
+  else document.addEventListener('firebaseReady', fn, { once: true });
+}
+
+function dbRef(path) { return window._ref(window._db, path); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setupRoom() {
+  const code = document.getElementById('setup-code-input').value.trim().toUpperCase();
+  if (code.length !== 4) { showErr('setup-error', 'Please enter exactly 4 letters'); return; }
+  waitForFirebase(() => {
+    window._set(dbRef(`rooms/${code}`), { voting: false, round: 0, scenario: '', votes: {} }).then(() => {
+      currentRoom = code;
+      isTeacher = true;
+      document.getElementById('teacher-room-display').textContent = code;
+      renderCriteriaResults();
+      listenToVotes();
+      showScreen('screen-teacher');
+    });
+  });
+}
+
+function joinRoom() {
+  const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+  if (code.length !== 4) { showErr('join-error', 'Enter a 4-letter code'); return; }
+  waitForFirebase(() => {
+    window._get(dbRef(`rooms/${code}`)).then(snap => {
+      if (!snap.exists()) { showErr('join-error', 'Room not found — check the code'); return; }
+      currentRoom = code;
+      hasVoted = false;
+      document.getElementById('student-room-display').textContent = code;
+      document.getElementById('student-join').classList.add('hidden');
+      listenToVotingState();
+    });
+  });
+}
+
+function listenToVotingState() {
+  window._onValue(dbRef(`rooms/${currentRoom}/voting`), snap => {
+    const isOpen = snap.val();
+    if (isOpen && !hasVoted) showStudentVoteForm();
+    else if (!isOpen) { hasVoted = false; showStudentWaiting(); }
+  });
+  window._onValue(dbRef(`rooms/${currentRoom}/round`), snap => {
+    const r = snap.val();
+    if (r !== currentRound) {
+      currentRound = r;
+      hasVoted = false;
+      studentVotes = {};
+      document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('lit'));
+    }
+  });
+}
+
+function showStudentWaiting() {
+  document.getElementById('student-waiting').classList.remove('hidden');
+  document.getElementById('student-vote').classList.add('hidden');
+  document.getElementById('student-voted').classList.add('hidden');
+}
+
+function showStudentVoteForm() {
+  buildStudentCriteriaBlocks();
+  document.getElementById('student-waiting').classList.add('hidden');
+  document.getElementById('student-vote').classList.remove('hidden');
+  document.getElementById('student-voted').classList.add('hidden');
+}
+
+function buildStudentCriteriaBlocks() {
+  document.getElementById('student-criteria-blocks').innerHTML = CRITERIA.map(c => `
+    <div class="vote-criterion">
+      <div class="vc-name">${c.name}</div>
+      <div class="star-row">
+        ${[1,2,3,4,5].map(n => `<button class="star-btn" data-c="${c.id}" data-v="${n}" onclick="selectStar(this,'${c.id}',${n})">★</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectStar(btn, criterionId, value) {
+  document.querySelectorAll(`.star-btn[data-c="${criterionId}"]`).forEach(b => {
+    b.classList.toggle('lit', parseInt(b.dataset.v) <= value);
+  });
+  studentVotes[criterionId] = value;
+}
+
+function submitVote() {
+  if (Object.keys(studentVotes).length < CRITERIA.length) { showErr('vote-error', 'Please rate all 3 criteria ✨'); return; }
+  const voteId = 'v_' + Math.random().toString(36).slice(2,9);
+  window._set(dbRef(`rooms/${currentRoom}/votes/${voteId}`), studentVotes).then(() => {
+    hasVoted = true;
+    document.getElementById('student-vote').classList.add('hidden');
+    document.getElementById('student-voted').classList.remove('hidden');
+  });
+}
+
+function newRound() {
+  const s = SCENARIOS[Math.floor(Math.random() * SCENARIOS.length)];
+  document.getElementById('scenario-text').textContent = s.text;
+  document.getElementById('scenario-roles').innerHTML = s.roles.map(r => `<div class="scenario-role">${r}</div>`).join('');
+  if (currentRoom) {
+    currentRound++;
+    window._set(dbRef(`rooms/${currentRoom}/votes`), {});
+    window._set(dbRef(`rooms/${currentRoom}/round`), currentRound);
+    window._set(dbRef(`rooms/${currentRoom}/voting`), false);
+  }
+  document.getElementById('btn-open-vote').disabled = false;
+  document.getElementById('btn-close-vote').disabled = true;
+  updateVoteBadge(false);
+  renderCriteriaResults({});
+  document.getElementById('voter-count').textContent = '0 votes';
+  resetTimer();
+}
+
+function openVoting() {
+  if (!currentRoom) return;
+  window._set(dbRef(`rooms/${currentRoom}/voting`), true);
+  document.getElementById('btn-open-vote').disabled = true;
+  document.getElementById('btn-close-vote').disabled = false;
+  updateVoteBadge(true);
+}
+
+function closeVoting() {
+  if (!currentRoom) return;
+  window._set(dbRef(`rooms/${currentRoom}/voting`), false);
+  document.getElementById('btn-open-vote').disabled = false;
+  document.getElementById('btn-close-vote').disabled = true;
+  updateVoteBadge(false);
+}
+
+function updateVoteBadge(open) {
+  const b = document.getElementById('vote-status-badge');
+  b.textContent = open ? '🟢 Voting Open!' : '⛔ Voting Closed';
+  b.className = 'vote-status ' + (open ? 'open' : 'closed');
+}
+
+function listenToVotes() {
+  window._onValue(dbRef(`rooms/${currentRoom}/votes`), snap => {
+    updateResults(snap.val() || {});
+  });
+}
+
+function updateResults(votesObj) {
+  const votesList = Object.values(votesObj);
+  document.getElementById('voter-count').textContent = `${votesList.length} vote${votesList.length !== 1 ? 's' : ''}`;
+  const tallies = {};
+  CRITERIA.forEach(c => { tallies[c.id] = [0,0,0,0,0]; });
+  votesList.forEach(v => {
+    CRITERIA.forEach(c => { if (v[c.id]) tallies[c.id][v[c.id]-1]++; });
+  });
+  renderCriteriaResults(tallies, votesList.length);
+}
+
+function renderCriteriaResults(tallies, total) {
+  const container = document.getElementById('criteria-results');
+  if (!tallies) {
+    container.innerHTML = CRITERIA.map(c => `
+      <div class="criterion">
+        <div class="criterion-name">${c.name}</div>
+        <div class="stars-bar">
+          ${[1,2,3,4,5].map(n => `<div class="star-pill s${n}">★${n}</div><div class="star-count">–</div>`).join('')}
+          <div class="avg-score">–</div>
+        </div>
+      </div>`).join('');
+    return;
+  }
+  container.innerHTML = CRITERIA.map(c => {
+    const t = tallies[c.id] || [0,0,0,0,0];
+    const sum = t.reduce((a,v,i) => a+v*(i+1), 0);
+    const count = t.reduce((a,v) => a+v, 0);
+    const avg = count > 0 ? (sum/count).toFixed(1) : '–';
+    return `
+      <div class="criterion">
+        <div class="criterion-name">${c.name}</div>
+        <div class="stars-bar">
+          ${t.map((n,i) => `<div class="star-pill s${i+1}" style="min-width:${24+n*7}px">★${i+1}</div><div class="star-count">${n}</div>`).join('')}
+          <div class="avg-score">${avg}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  timerSeconds = seconds;
+  timerRunning = true;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    if (timerSeconds <= 0) { clearInterval(timerInterval); timerRunning = false; return; }
+    timerSeconds--;
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
+  else if (timerSeconds > 0) {
+    timerRunning = true;
+    timerInterval = setInterval(() => {
+      if (timerSeconds <= 0) { clearInterval(timerInterval); return; }
+      timerSeconds--;
+      updateTimerDisplay();
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 180;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds/60);
+  const s = timerSeconds % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  el.classList.toggle('warn', timerSeconds <= 30 && timerSeconds > 0);
+}
+
+function toggleScaffold() {
+  document.getElementById('scaffold-panel').classList.toggle('open');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+renderCriteriaResults();
+</script>
+</body>
+</html>
