@@ -5,66 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TALK BACK 💬</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getDatabase, ref, set, get, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyA4xeVcHisW_-FB3zHeLxzZtFt9ChpQjEY",
-    authDomain: "grammarblitz-12d4d.firebaseapp.com",
-    databaseURL: "https://grammarblitz-12d4d-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "grammarblitz-12d4d",
-    storageBucket: "grammarblitz-12d4d.firebasestorage.app",
-    messagingSenderId: "197853726033",
-    appId: "1:197853726033:web:3ecc65d3b13dcc3cfe7f70"
+  const fc = {
+    apiKey:"AIzaSyA4xeVcHisW_-FB3zHeLxzZtFt9ChpQjEY",
+    authDomain:"grammarblitz-12d4d.firebaseapp.com",
+    databaseURL:"https://grammarblitz-12d4d-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"grammarblitz-12d4d",
+    storageBucket:"grammarblitz-12d4d.firebasestorage.app",
+    messagingSenderId:"197853726033",
+    appId:"1:197853726033:web:3ecc65d3b13dcc3cfe7f70"
   };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  window._db=db; window._ref=ref; window._set=set; window._get=get;
-  window._onValue=onValue; window._push=push;
-  window._firebaseReady=true;
-  document.dispatchEvent(new Event('firebaseReady'));
+  const db = getDatabase(initializeApp(fc));
+  window._db=db; window._ref=ref; window._set=set; window._get=get; window._onValue=onValue; window._push=push;
+  window._fb=true; document.dispatchEvent(new Event('fb'));
 </script>
-
 <style>
-:root {
-  --pink:#ff6eb4; --mint:#5ee8c0; --yellow:#ffe045;
-  --lav:#c9b8ff; --coral:#ff7b5c; --ink:#1a1a1a;
-  --white:#fff; --off:#fffdf5;
-  --b:3px solid #1a1a1a; --sh:5px 5px 0 #1a1a1a; --shsm:3px 3px 0 #1a1a1a; --r:16px;
-  --ff:'Fredoka One',cursive; --mono:'Space Mono',monospace;
+:root{
+  --pink:#ff6eb4;--mint:#5ee8c0;--yellow:#ffe045;--lav:#c9b8ff;--coral:#ff7b5c;
+  --ink:#1a1a1a;--white:#fff;--off:#fffdf5;--grey:#f0ede6;
+  --b:3px solid #1a1a1a;--sh:5px 5px 0 #1a1a1a;--shsm:3px 3px 0 #1a1a1a;--r:16px;
+  --ff:'Fredoka One',cursive;--mono:'Space Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:100vh;overflow-x:hidden;}
-.screen{display:none;min-height:100vh;}
-.screen.active{display:flex;flex-direction:column;}
+.screen{display:none;min-height:100vh;} .screen.active{display:flex;flex-direction:column;}
 .hidden{display:none!important;}
-
-/* shared */
 .ff{font-family:var(--ff);}
-.label{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:#888;}
-.err{font-size:.7rem;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;}
+.label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:#888;}
+.err{font-size:.68rem;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;}
 .card{background:var(--white);border:var(--b);box-shadow:var(--sh);border-radius:var(--r);}
-.cinput{font-family:var(--ff);font-size:1.5rem;letter-spacing:2px;text-align:center;border:var(--b);border-radius:var(--r);padding:.7rem 1rem;background:var(--off);width:100%;outline:none;box-shadow:var(--shsm);transition:box-shadow .1s;}
-.cinput:focus{box-shadow:5px 5px 0 var(--pink);border-color:var(--pink);}
-.cbtn{font-family:var(--ff);font-size:1.2rem;padding:.7rem 1.2rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
-.cbtn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
-.cbtn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);}
-.cbtn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;box-shadow:var(--sh)!important;}
-.cbtn.pink{background:var(--pink);color:#fff;} .cbtn.yellow{background:var(--yellow);color:var(--ink);}
-.cbtn.lav{background:var(--lav);color:var(--ink);} .cbtn.coral{background:var(--coral);color:#fff;}
-.cbtn.mint{background:var(--mint);color:var(--ink);} .cbtn.white{background:var(--white);color:var(--ink);}
-.cbtn.sm{font-size:1rem;padding:.5rem 1rem;}
+
+/* inputs */
+.ci{font-family:var(--ff);font-size:1.5rem;letter-spacing:2px;text-align:center;border:var(--b);border-radius:var(--r);padding:.7rem 1rem;background:var(--off);width:100%;outline:none;box-shadow:var(--shsm);transition:box-shadow .1s;}
+.ci:focus{box-shadow:5px 5px 0 var(--pink);border-color:var(--pink);}
+
+/* buttons */
+.cb{font-family:var(--ff);font-size:1.2rem;padding:.7rem 1.2rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
+.cb:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.cb:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);}
+.cb:disabled{opacity:.35;cursor:not-allowed;transform:none!important;box-shadow:var(--sh)!important;}
+.cb.pink{background:var(--pink);color:#fff;} .cb.yellow{background:var(--yellow);color:var(--ink);}
+.cb.lav{background:var(--lav);color:var(--ink);} .cb.coral{background:var(--coral);color:#fff;}
+.cb.mint{background:var(--mint);color:var(--ink);} .cb.white{background:var(--white);color:var(--ink);}
+.cb.dark{background:var(--ink);color:var(--white);}
+.cb.sm{font-size:1rem;padding:.5rem 1rem;}
 
 /* ── LANDING ── */
 #screen-landing{background:var(--yellow);align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden;}
-.deco{position:absolute;font-size:3rem;opacity:.2;pointer-events:none;}
+.deco{position:absolute;font-size:3rem;opacity:.18;pointer-events:none;}
 .d1{top:5%;left:5%;transform:rotate(-15deg)} .d2{top:10%;right:8%;transform:rotate(20deg)}
 .d3{bottom:12%;left:10%;transform:rotate(10deg)} .d4{bottom:8%;right:6%;transform:rotate(-20deg)}
 .d5{top:50%;left:2%} .d6{top:40%;right:2%;transform:rotate(-10deg)}
 .ltitle{font-family:var(--ff);font-size:clamp(2.2rem,8vw,5.5rem);line-height:1;}
 .ltitle .pop{color:var(--pink);}
-.lsub{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:#666;margin:.8rem 0 2rem;white-space:nowrap;}
+.lsub{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:#666;margin:.6rem 0 .4rem;white-space:nowrap;}
+.lthesis{font-size:.65rem;color:#555;font-style:italic;margin-bottom:1.8rem;line-height:1.5;max-width:280px;}
 .rbtn{font-family:var(--ff);font-size:1.4rem;padding:.9rem 1.5rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;letter-spacing:1px;}
 .rbtn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
 .rbtn.t{background:var(--pink);color:#fff;} .rbtn.s{background:var(--mint);color:var(--ink);}
@@ -73,146 +70,176 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .t-header{background:var(--pink);border-bottom:var(--b);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
 .t-logo{font-family:var(--ff);font-size:2rem;color:#fff;letter-spacing:2px;}
 .t-logo .pop{color:var(--yellow);}
-.rmbadge{background:var(--white);border:var(--b);border-radius:12px;padding:.4rem 1rem;box-shadow:var(--shsm);text-align:center;}
-.rmbadge-code{font-family:var(--ff);font-size:1.6rem;color:var(--pink);letter-spacing:4px;line-height:1.2;}
+.rmbadge{background:var(--white);border:var(--b);border-radius:12px;padding:.35rem .9rem;box-shadow:var(--shsm);text-align:center;}
+.rmbadge-code{font-family:var(--ff);font-size:1.5rem;color:var(--pink);letter-spacing:4px;line-height:1.2;}
 .t-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem;}
 @media(max-width:700px){.t-body{grid-template-columns:1fr;}}
 
 /* director panel */
-.director{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;}
-.director-title{font-family:var(--ff);font-size:1.4rem;display:flex;align-items:center;gap:.5rem;}
-.dir-section{display:flex;flex-direction:column;gap:.4rem;}
-.dir-divider{border:none;border-top:2px dashed #ddd;margin:.2rem 0;}
+.director{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;display:flex;flex-direction:column;gap:.75rem;}
+.dir-title{font-family:var(--ff);font-size:1.4rem;}
+.dir-hint{font-size:.58rem;color:#aaa;font-style:italic;line-height:1.4;}
+.dir-philosophy{font-size:.62rem;color:#bbb;font-style:italic;letter-spacing:.02em;padding:.1rem 0 .3rem;border-bottom:1px solid #f0ede6;margin-bottom:.1rem;}
+.dir-div{border:none;border-top:2px dashed #e0ddd5;margin:.1rem 0;}
 
 /* roster */
-.roster-list{display:flex;flex-direction:column;gap:.35rem;max-height:160px;overflow-y:auto;}
-.ri{display:flex;align-items:center;justify-content:space-between;padding:.35rem .7rem;border:2px solid var(--ink);border-radius:10px;box-shadow:2px 2px 0 var(--ink);}
-.ri.on{background:var(--yellow);}  .ri.off{background:var(--off);}
-.ri-name{font-family:var(--ff);font-size:1rem;}
-.ri-role{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#666;max-width:55%;text-align:right;}
+.roster{display:flex;flex-direction:column;gap:.3rem;max-height:150px;overflow-y:auto;}
+.ri{display:flex;align-items:center;justify-content:space-between;padding:.3rem .65rem;border:2px solid var(--ink);border-radius:10px;box-shadow:2px 2px 0 var(--ink);}
+.ri.on{background:var(--yellow);} .ri.off{background:var(--off);}
+.ri-name{font-family:var(--ff);font-size:.95rem;}
+.ri-role{font-size:.55rem;text-transform:uppercase;letter-spacing:.07em;color:#666;max-width:55%;text-align:right;}
 .ri-role.hot{color:var(--coral);font-weight:700;}
-.roster-empty{font-size:.65rem;color:#bbb;text-align:center;padding:.8rem;text-transform:uppercase;letter-spacing:.1em;}
+.rempty{font-size:.62rem;color:#bbb;text-align:center;padding:.7rem;text-transform:uppercase;letter-spacing:.1em;}
 
 /* scenario */
-.sc-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;position:relative;overflow:hidden;}
-.sc-card::after{content:'💬';font-size:4rem;position:absolute;right:-.5rem;bottom:-.5rem;opacity:.15;pointer-events:none;}
-.sc-text{font-family:var(--ff);font-size:clamp(.95rem,1.7vw,1.3rem);line-height:1.35;margin:.35rem 0 .8rem;}
-.sc-roles{display:flex;flex-wrap:wrap;gap:.4rem;}
-.sc-role{background:var(--white);border:2px solid var(--ink);border-radius:20px;padding:.2rem .6rem;font-size:.62rem;box-shadow:2px 2px 0 var(--ink);}
+.sc-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.1rem;position:relative;overflow:hidden;}
+.sc-card::after{content:'💬';font-size:3.5rem;position:absolute;right:-.3rem;bottom:-.3rem;opacity:.15;pointer-events:none;}
+.sc-text{font-family:var(--ff);font-size:clamp(.9rem,1.6vw,1.2rem);line-height:1.35;margin:.3rem 0 .7rem;}
+.sc-roles{display:flex;flex-wrap:wrap;gap:.35rem;}
+.sc-role{background:var(--white);border:2px solid var(--ink);border-radius:20px;padding:.18rem .55rem;font-size:.6rem;box-shadow:2px 2px 0 var(--ink);}
 
-/* complication broadcast */
-.comp-display{display:none;border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem;animation:slidein .3s ease;}
-.comp-display.show{display:block;}
-@keyframes slidein{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
-.comp-text{font-family:var(--ff);font-size:1.05rem;line-height:1.3;color:#fff;}
+/* ending drawer */
+.ending-drawer{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:.9rem;display:none;flex-direction:column;gap:.5rem;}
+.ending-drawer.open{display:flex;}
+.ending-option{font-family:var(--ff);font-size:1rem;padding:.55rem .9rem;border:2px solid rgba(255,255,255,.3);border-radius:12px;background:transparent;color:#fff;cursor:pointer;text-align:left;transition:background .15s,border-color .15s;}
+.ending-option:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6);}
+.ending-option.fired{background:var(--coral);border-color:var(--coral);opacity:.6;cursor:default;}
+.ending-option-group{border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:.5rem;}
+.ending-group-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:.35rem;}
+.ending-option.ending-sub{font-size:.95rem;padding:.4rem .75rem;margin-bottom:.25rem;}
+.ending-option.ending-sub:last-child{margin-bottom:0;}
+
+/* comp broadcast label */
+.comp-note{background:var(--coral);border:var(--b);border-radius:var(--r);padding:.7rem 1rem;display:none;}
+.comp-note.show{display:block;}
+.comp-note-text{font-family:var(--ff);font-size:.95rem;color:#fff;line-height:1.3;}
+
+/* intervention sent note */
+.intv-note{background:var(--ink);border:var(--b);border-radius:var(--r);padding:.6rem .9rem;display:none;}
+.intv-note.show{display:block;}
+.intv-note-text{font-size:.65rem;color:var(--mint);letter-spacing:.05em;}
 
 /* timer */
 .timer-block{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;text-align:center;}
-.timer-disp{font-family:var(--ff);font-size:clamp(4rem,10vw,6.5rem);line-height:1;transition:color .3s;}
-.timer-disp.warn{color:var(--coral);}
-.tctrls{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:.7rem;}
-.tbtn{font-family:var(--ff);font-size:.95rem;padding:.45rem .9rem;border:var(--b);border-radius:10px;cursor:pointer;box-shadow:var(--shsm);transition:transform .1s,box-shadow .1s;background:var(--white);}
+.tdisp{font-family:var(--ff);font-size:clamp(4rem,10vw,6.5rem);line-height:1;transition:color .3s;}
+.tdisp.warn{color:var(--coral);}
+.tctrls{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:.65rem;}
+.tbtn{font-family:var(--ff);font-size:.9rem;padding:.4rem .85rem;border:var(--b);border-radius:10px;cursor:pointer;box-shadow:var(--shsm);transition:transform .1s,box-shadow .1s;background:var(--white);}
 .tbtn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink);}
 .tbtn.go{background:var(--mint);}
 
 /* results */
-.res-panel{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;display:flex;flex-direction:column;gap:.7rem;}
-.vstatus{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;padding:.3rem .8rem;border:var(--b);border-radius:20px;display:inline-block;align-self:flex-start;box-shadow:2px 2px 0 var(--ink);}
+.res-panel{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.1rem;display:flex;flex-direction:column;gap:.65rem;}
+.vstatus{font-size:.58rem;text-transform:uppercase;letter-spacing:.13em;padding:.28rem .75rem;border:var(--b);border-radius:20px;display:inline-block;align-self:flex-start;box-shadow:2px 2px 0 var(--ink);}
 .vstatus.closed{background:#eee;color:#888;} .vstatus.open{background:var(--mint);animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
-.crit{background:var(--off);border:2px solid var(--ink);border-radius:10px;padding:.6rem;margin-bottom:.4rem;}
-.crit-name{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#555;margin-bottom:.4rem;}
-.sbar{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;}
-.spill{height:24px;min-width:30px;padding:0 .45rem;display:flex;align-items:center;justify-content:center;font-size:.65rem;border-radius:20px;border:2px solid var(--ink);transition:all .2s;}
-.spill.s1{background:#f3f3f3} .spill.s2{background:var(--lav)} .spill.s3{background:#b8f0e0} .spill.s4{background:var(--mint)} .spill.s5{background:var(--pink);color:#fff}
-.scnt{font-size:.58rem;color:#888;min-width:1.4rem;}
-.avg{font-family:var(--ff);font-size:1.7rem;color:var(--pink);margin-left:auto;}
+.crit{background:var(--off);border:2px solid var(--ink);border-radius:10px;padding:.55rem;margin-bottom:.35rem;}
+.crit-name{font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;color:#555;margin-bottom:.4rem;}
+.sbar{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;}
+.spill{height:22px;min-width:28px;padding:0 .4rem;display:flex;align-items:center;justify-content:center;font-size:.62rem;border-radius:20px;border:2px solid var(--ink);transition:all .2s;}
+.spill.s1{background:#f3f3f3}.spill.s2{background:var(--lav)}.spill.s3{background:#b8f0e0}.spill.s4{background:var(--mint)}.spill.s5{background:var(--pink);color:#fff}
+.scnt{font-size:.56rem;color:#888;min-width:1.3rem;}
+.avg{font-family:var(--ff);font-size:1.6rem;color:var(--pink);margin-left:auto;}
+
+/* memory log */
+.memory-log{display:flex;flex-direction:column;gap:.3rem;max-height:100px;overflow-y:auto;}
+.memory-empty{font-size:.6rem;color:#bbb;font-style:italic;padding:.2rem 0;}
+.memory-item{display:flex;align-items:flex-start;gap:.4rem;padding:.3rem .5rem;background:var(--off);border:2px solid var(--ink);border-radius:8px;box-shadow:2px 2px 0 var(--ink);}
+.memory-round{font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--pink);white-space:nowrap;padding-top:.1rem;}
+.memory-text{font-size:.65rem;line-height:1.35;color:var(--ink);}
 
 /* scaffold */
-.scaf-tog{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;background:var(--lav);border:var(--b);border-radius:20px;padding:.35rem .9rem;cursor:pointer;box-shadow:var(--shsm);align-self:flex-start;transition:transform .1s;}
+.scaf-tog{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;background:var(--lav);border:var(--b);border-radius:20px;padding:.32rem .85rem;cursor:pointer;box-shadow:var(--shsm);align-self:flex-start;transition:transform .1s;}
 .scaf-tog:hover{transform:translate(-1px,-1px);}
-.scaf-panel{display:none;background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.9rem;}
+.scaf-panel{display:none;background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.85rem;}
 .scaf-panel.open{display:block;}
-.scaf-cat{font-size:.58rem;text-transform:uppercase;letter-spacing:.13em;color:var(--pink);margin:.6rem 0 .25rem;font-weight:700;}
+.scaf-cat{font-size:.56rem;text-transform:uppercase;letter-spacing:.12em;color:var(--pink);margin:.55rem 0 .22rem;font-weight:700;}
 .scaf-cat:first-child{margin-top:0;}
-.scaf-list{list-style:none;display:flex;flex-wrap:wrap;gap:.25rem;}
-.scaf-list li{background:var(--off);border:2px solid var(--ink);border-radius:20px;padding:.18rem .55rem;font-size:.62rem;box-shadow:2px 2px 0 var(--ink);}
+.scaf-list{list-style:none;display:flex;flex-wrap:wrap;gap:.22rem;}
+.scaf-list li{background:var(--off);border:2px solid var(--ink);border-radius:20px;padding:.16rem .5rem;font-size:.6rem;box-shadow:2px 2px 0 var(--ink);}
 
 /* ── STUDENT ── */
 .s-header{background:var(--mint);border-bottom:var(--b);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
 .s-logo{font-family:var(--ff);font-size:1.8rem;}
 .s-logo .pop{color:var(--pink);}
-.s-room{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#555;text-align:right;}
-.s-room strong{font-family:var(--ff);font-size:1.4rem;color:var(--ink);display:block;line-height:1.1;}
-.sbody{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;max-width:460px;margin:0 auto;width:100%;}
+.s-rm{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#555;text-align:right;}
+.s-rm strong{font-family:var(--ff);font-size:1.3rem;color:var(--ink);display:block;line-height:1.1;}
+.sbody{flex:1;padding:1.4rem;display:flex;flex-direction:column;gap:.9rem;max-width:460px;margin:0 auto;width:100%;}
 
 /* join */
-.jform{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1.1rem;text-align:center;}
+.jform{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;}
 .jtitle{font-family:var(--ff);font-size:2.8rem;line-height:1;}
 .jtitle .pop{color:var(--pink);}
 
 /* waiting */
-.wstate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;padding:2rem;}
-.wblob{width:90px;height:90px;background:var(--yellow);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:var(--sh);animation:float 2.5s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.wmsg{font-family:var(--ff);font-size:1.8rem;}
-.wsub{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa;}
+.wstate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:.9rem;text-align:center;padding:2rem;}
+.wblob{width:85px;height:85px;background:var(--yellow);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;box-shadow:var(--sh);animation:float 2.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.wmsg{font-family:var(--ff);font-size:1.7rem;}
+.wsub{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa;}
 
-/* role card */
-.role-reveal{display:flex;flex-direction:column;gap:1rem;padding:.5rem 0;}
-.role-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;}
-.role-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
-.role-blob{width:48px;height:48px;background:var(--pink);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:var(--shsm);flex-shrink:0;}
-.role-name{font-family:var(--ff);font-size:1.5rem;line-height:1.1;}
-.role-scenario{font-size:.75rem;line-height:1.4;color:#333;border-top:2px dashed rgba(0,0,0,.15);padding-top:.7rem;margin-top:.3rem;}
+/* role card — emotional contrast */
+.role-reveal{display:flex;flex-direction:column;gap:.9rem;padding:.2rem 0;}
+.role-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;}
+.role-header{display:flex;align-items:center;gap:.65rem;margin-bottom:.65rem;}
+.role-blob{width:46px;height:46px;background:var(--pink);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:var(--shsm);flex-shrink:0;}
+.role-name{font-family:var(--ff);font-size:1.4rem;line-height:1.1;}
+.role-scenario{font-size:.72rem;line-height:1.45;color:#333;border-top:2px dashed rgba(0,0,0,.15);padding-top:.65rem;margin-top:.25rem;}
+.mem-ctx{font-size:.6rem;color:#888;font-style:italic;border-top:1px dashed rgba(0,0,0,.1);padding-top:.45rem;margin-top:.35rem;line-height:1.4;}
 
-/* secret objective */
-.objective-card{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem 1.2rem;}
-.obj-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:var(--pink);margin-bottom:.3rem;}
-.obj-text{font-family:var(--ff);font-size:1.2rem;color:var(--yellow);line-height:1.3;}
-.obj-sub{font-size:.6rem;color:#888;margin-top:.3rem;letter-spacing:.05em;}
+/* objective — dark, quiet, heavy */
+.obj-card{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.5rem 1.4rem;}
+.obj-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.15em;color:var(--pink);margin-bottom:.4rem;}
+.obj-text{font-family:var(--ff);font-size:1.25rem;color:var(--yellow);line-height:1.5;}
+.obj-footer{font-size:.58rem;color:#666;margin-top:.5rem;letter-spacing:.04em;font-style:italic;}
 
-/* private complication */
-.priv-comp{display:none;background:var(--coral);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:.9rem 1.1rem;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
-.priv-comp.show{display:block;}
-@keyframes popin{0%{transform:scale(.75);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
-.pc-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.7);margin-bottom:.25rem;}
+/* private complication — dark pop */
+.priv-comp{display:none;background:#2a1a1a;border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem 1.4rem;}
+.priv-comp.show{display:block;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+@keyframes popin{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.pc-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.14em;color:var(--coral);margin-bottom:.3rem;}
 .pc-text{font-family:var(--ff);font-size:1.1rem;color:#fff;line-height:1.3;}
 
 /* audience card */
-.aud-card{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;text-align:center;}
-.aud-title{font-family:var(--ff);font-size:1.8rem;margin-bottom:.3rem;}
-.aud-sub{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#555;}
+.aud-card{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;text-align:center;}
+.aud-title{font-family:var(--ff);font-size:1.7rem;margin-bottom:.3rem;}
+.aud-sub{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#555;}
 
-/* intervention */
-.intervention-btn{font-family:var(--ff);font-size:1.4rem;padding:.9rem;border:var(--b);border-radius:var(--r);background:var(--coral);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;animation:pulse-border 1.5s infinite;}
-.intervention-btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
-.intervention-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;animation:none;}
-@keyframes pulse-border{0%,100%{box-shadow:var(--sh)}50%{box-shadow:5px 5px 0 var(--coral)}}
+/* intervention button — audience */
+.intv-btn{font-family:var(--ff);font-size:1.3rem;padding:.85rem;border:var(--b);border-radius:var(--r);background:var(--coral);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;animation:pulse-sh 1.8s infinite;}
+.intv-btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.intv-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;animation:none;}
+@keyframes pulse-sh{0%,100%{box-shadow:var(--sh)}50%{box-shadow:5px 5px 0 var(--coral)}}
+
+/* ending — on all student screens, heavy weight */
+.ending-screen{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:2rem 1.6rem;text-align:center;}
+.ending-screen.show{display:block;animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
+.ending-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.16em;color:#666;margin-bottom:.5rem;}
+.ending-text{font-family:var(--ff);font-size:clamp(1.4rem,4.5vw,2rem);color:var(--yellow);line-height:1.35;letter-spacing:.5px;}
 
 /* intervention broadcast */
-.intv-alert{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem;text-align:center;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
-.intv-alert.show{display:block;}
-.intv-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:var(--coral);margin-bottom:.25rem;}
-.intv-text{font-family:var(--ff);font-size:1.3rem;color:var(--yellow);line-height:1.3;}
+.intv-broadcast{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:.85rem 1rem;text-align:center;}
+.intv-broadcast.show{display:block;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+.ib-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.14em;color:var(--coral);margin-bottom:.25rem;}
+.ib-text{font-family:var(--ff);font-size:1.15rem;color:var(--yellow);line-height:1.3;}
 
 /* vote */
-.vform{display:flex;flex-direction:column;gap:.9rem;}
-.vtitle{font-family:var(--ff);font-size:2rem;line-height:1.1;}
+.vform{display:flex;flex-direction:column;gap:.85rem;}
+.vtitle{font-family:var(--ff);font-size:1.9rem;line-height:1.1;}
 .vtitle .pop{color:var(--pink);}
-.vcrit{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.9rem;}
-.vc-name{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:.6rem;}
-.srow{display:flex;gap:.45rem;justify-content:center;}
-.sbtn{width:44px;height:44px;font-size:1.7rem;background:var(--off);border:var(--b);border-radius:10px;cursor:pointer;transition:transform .1s,background .1s;display:flex;align-items:center;justify-content:center;box-shadow:var(--shsm);color:#ccc;}
+.vcrit{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.85rem;}
+.vc-name{font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:.55rem;}
+.srow{display:flex;gap:.4rem;justify-content:center;}
+.sbtn{width:42px;height:42px;font-size:1.65rem;background:var(--off);border:var(--b);border-radius:10px;cursor:pointer;transition:transform .1s,background .1s;display:flex;align-items:center;justify-content:center;box-shadow:var(--shsm);color:#ccc;}
 .sbtn:hover{transform:scale(1.15) rotate(-5deg);}
 .sbtn.lit{color:#f5a623;background:var(--yellow);box-shadow:3px 3px 0 var(--ink);}
-.subvote{font-family:var(--ff);font-size:1.5rem;padding:.9rem;border:var(--b);border-radius:var(--r);background:var(--pink);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
+.subvote{font-family:var(--ff);font-size:1.4rem;padding:.85rem;border:var(--b);border-radius:var(--r);background:var(--pink);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
 .subvote:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
 .subvote:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
 
 /* voted */
-.voted-st{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;padding:2rem;}
-.voted-blob{width:100px;height:100px;background:var(--mint);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;box-shadow:var(--sh);animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
+.voted-st{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:.9rem;text-align:center;padding:2rem;}
+.voted-blob{width:95px;height:95px;background:var(--mint);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:var(--sh);animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
 </style>
 </head>
 <body>
@@ -223,10 +250,10 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
   <span class="deco d3">🗺️</span><span class="deco d4">🌸</span>
   <span class="deco d5">🤝</span><span class="deco d6">💬</span>
   <div class="card" style="max-width:480px;width:100%;padding:2.5rem 1.5rem;text-align:center;overflow:hidden;position:relative;z-index:1;">
-    <div style="font-size:3rem;margin-bottom:.5rem">🎭</div>
     <div class="ltitle">TALK<span class="pop">BACK</span></div>
     <div class="lsub">relationships · communication · travel</div>
-    <div style="display:flex;flex-direction:column;gap:.8rem;">
+    <div class="lthesis">Communication is performance under emotional pressure.</div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
       <button class="rbtn t" onclick="showScreen('screen-setup')">👩‍🏫 I'm the Teacher</button>
       <button class="rbtn s" onclick="showScreen('screen-student')">🙋 I'm a Student</button>
     </div>
@@ -235,14 +262,14 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 
 <!-- SETUP -->
 <div id="screen-setup" class="screen" style="align-items:center;justify-content:center;background:var(--mint);padding:2rem;">
-  <div class="card" style="max-width:380px;width:100%;padding:2.2rem;display:flex;flex-direction:column;gap:1.1rem;align-items:center;text-align:center;">
-    <div style="font-size:2.5rem">🏫</div>
-    <div class="ff" style="font-size:2.3rem;">Set Up Room</div>
-    <div class="label">Choose a 4-letter room code</div>
-    <input class="cinput" id="setup-code" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
+  <div class="card" style="max-width:370px;width:100%;padding:2rem;display:flex;flex-direction:column;gap:1rem;align-items:center;text-align:center;">
+    <div style="font-size:2.2rem">🏫</div>
+    <div class="ff" style="font-size:2.2rem;">Set Up Room</div>
+    <div class="label">4-letter room code</div>
+    <input class="ci" id="setup-code" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
     <div class="err hidden" id="setup-err"></div>
-    <button class="cbtn pink" onclick="setupRoom()">Create Room ✨</button>
-    <button class="cbtn yellow sm" onclick="showScreen('screen-landing')">← Back</button>
+    <button class="cb pink" onclick="setupRoom()">Create Room ✨</button>
+    <button class="cb yellow sm" onclick="showScreen('screen-landing')">← Back</button>
   </div>
 </div>
 
@@ -252,97 +279,122 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
     <div class="t-logo">TALK<span class="pop">BACK</span> 🎭</div>
     <div class="rmbadge">
       <div class="label">Room Code</div>
-      <div class="rmbadge-code" id="t-room-code">----</div>
+      <div class="rmbadge-code" id="t-code">----</div>
     </div>
   </div>
 
   <div class="t-body">
 
-    <!-- LEFT: Director Panel -->
+    <!-- LEFT: Director -->
     <div class="director">
-      <div class="director-title">🎬 Director</div>
+      <div class="dir-title">Director</div>
+      <div class="dir-philosophy">Push tension, not humiliation.</div>
 
-      <!-- 1. Roster -->
-      <div class="dir-section">
-        <div class="label">Students <span id="roster-count"></span></div>
-        <div class="roster-list" id="roster-list">
-          <div class="roster-empty">Waiting for students…</div>
-        </div>
+      <!-- Roster -->
+      <div>
+        <div class="label" style="margin-bottom:.35rem;">Students <span id="r-count"></span></div>
+        <div class="roster" id="roster"><div class="rempty">Waiting for students…</div></div>
       </div>
+      <hr class="dir-div">
 
-      <hr class="dir-divider">
-
-      <!-- 2. Scene -->
-      <div class="dir-section">
+      <!-- Scene -->
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
         <div class="label">Scene</div>
+        
         <div class="sc-card">
-          <div class="label" style="margin-bottom:.3rem">📋 Scenario</div>
-          <div class="sc-text" id="sc-text">Press START SCENE to begin</div>
+          <div class="label" style="margin-bottom:.25rem;">Scenario</div>
+          <div class="sc-text" id="sc-text">Press Start Scene to begin</div>
           <div class="sc-roles" id="sc-roles"></div>
         </div>
-        <button class="cbtn yellow" onclick="newRound()">⟳ Start New Scene</button>
+        <button class="cb yellow" onclick="newRound()">⟳ Start New Scene</button>
       </div>
+      <hr class="dir-div">
 
-      <hr class="dir-divider">
-
-      <!-- 3. During scene -->
-      <div class="dir-section">
+      <!-- During scene -->
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
         <div class="label">During the Scene</div>
-        <button class="cbtn coral sm" id="btn-comp" onclick="firePrivateComplications()" disabled>⚡ Fire Private Complications</button>
-        <div class="comp-display" id="comp-display" style="background:var(--coral);">
-          <div class="label" style="color:rgba(255,255,255,.7);margin-bottom:.25rem">Broadcast to all</div>
-          <div class="comp-text" id="comp-broadcast-text"></div>
-        </div>
-        <button class="cbtn white sm" id="btn-intv" onclick="fireIntervention()" disabled>🙋 Unlock Audience Intervention</button>
+        
+        <button class="cb coral sm" id="btn-comp" onclick="firePrivateComp()" disabled>Fire Private Complications</button>
+        <div class="comp-note" id="comp-note"><div class="comp-note-text" id="comp-note-text"></div></div>
+        <button class="cb white sm" id="btn-intv" onclick="unlockIntervention()" disabled>Unlock Audience Intervention</button>
+        <div class="intv-note" id="intv-note"><div class="intv-note-text">Intervention unlocked — waiting for audience…</div></div>
       </div>
+      <hr class="dir-div">
 
-      <hr class="dir-divider">
+      <!-- Ending -->
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
+        <div class="label">End the Scene</div>
+        <div class="dir-hint">Fire one ending. Scenes should land, not dissolve.</div>
+        <button class="cb dark sm" id="btn-ending" onclick="toggleEndingDrawer()" disabled>Choose Ending</button>
+        <div class="ending-drawer" id="ending-drawer">
+          <div class="label" style="color:rgba(255,255,255,.5);margin-bottom:.1rem;">Fire one — can't undo</div>
+          <button class="ending-option" onclick="fireEnding(this,'freeze')">Freeze Frame</button>
+          <button class="ending-option" onclick="fireEnding(this,'line')">Final Line</button>
+          <button class="ending-option" onclick="fireEnding(this,'decision')">Forced Decision</button>
+          <div class="ending-option-group">
+            <div class="ending-group-label">👥 Audience Reflection —</div>
+            <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_changed')">What changed?</button>
+            <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_unsaid')">What was left unsaid?</button>
+            <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_truth')">Who avoided the truth?</button>
+          </div>
+          <button class="ending-option" onclick="fireEnding(this,'silent')">Silent Ending</button>
+        </div>
+      </div>
+      <hr class="dir-div">
 
-      <!-- 4. Voting -->
-      <div class="dir-section">
+      <!-- Room Memory -->
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
+        <div class="label">Room Memory</div>
+        <div class="memory-log" id="memory-log"><div class="memory-empty">No scenes yet.</div></div>
+        <div style="display:flex;gap:.4rem;">
+          <input class="ci" id="memory-input" placeholder="Add a note…" style="font-size:.9rem;letter-spacing:0;padding:.45rem .7rem;" maxlength="80">
+          <button class="cb white sm" style="width:auto;white-space:nowrap;" onclick="addMemory()">+ Add</button>
+        </div>
+      </div>
+      <hr class="dir-div">
+
+      <!-- Voting -->
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
         <div class="label">Voting</div>
-        <button class="cbtn mint sm" id="btn-vote-open" onclick="openVoting()" disabled>▶ Open Voting</button>
-        <button class="cbtn lav sm" id="btn-vote-close" onclick="closeVoting()" disabled>■ Close Voting</button>
+        <button class="cb mint sm" id="btn-vopen" onclick="openVoting()" disabled>Open Voting</button>
+        <button class="cb lav sm" id="btn-vclose" onclick="closeVoting()" disabled>Close Voting</button>
       </div>
 
       <!-- Scaffold -->
-      <button class="scaf-tog" onclick="toggleScaffold()">🗣️ Language Scaffold</button>
-      <div class="scaf-panel" id="scaf-panel">
-        <div class="scaf-cat">💭 Expressing feelings</div>
+      <button class="scaf-tog" onclick="toggleScaf()">Language Scaffold</button>
+      <div class="scaf-panel" id="scaf">
+        <div class="scaf-cat">Expressing feelings</div>
         <ul class="scaf-list"><li>To be honest…</li><li>I feel like…</li><li>What bothers me is…</li><li>It's not that I don't…</li></ul>
-        <div class="scaf-cat">🤔 Disagreeing politely</div>
+        <div class="scaf-cat">Disagreeing politely</div>
         <ul class="scaf-list"><li>I see your point, but…</li><li>That's fair, although…</li><li>I'd actually argue…</li><li>Not necessarily…</li></ul>
-        <div class="scaf-cat">❓ Clarifying</div>
-        <ul class="scaf-list"><li>What exactly do you mean?</li><li>Could you say more?</li><li>So you're saying…?</li><li>Just to check…</li></ul>
-        <div class="scaf-cat">💡 Suggesting</div>
+        <div class="scaf-cat">Clarifying</div>
+        <ul class="scaf-list"><li>What exactly do you mean?</li><li>Could you say more?</li><li>So you're saying…?</li></ul>
+        <div class="scaf-cat">Suggesting</div>
         <ul class="scaf-list"><li>What if we…?</li><li>How about…?</li><li>One option would be…</li></ul>
-        <div class="scaf-cat">⏳ Buying time</div>
+        <div class="scaf-cat">Buying time</div>
         <ul class="scaf-list"><li>That's a good point…</li><li>Let me think…</li><li>Well, the thing is…</li></ul>
       </div>
     </div>
 
     <!-- RIGHT: Timer + Results -->
     <div style="display:flex;flex-direction:column;gap:1rem;">
-
       <div class="timer-block">
-        <div class="timer-disp" id="timer-disp">3:00</div>
+        <div class="tdisp" id="tdisp">3:00</div>
         <div class="tctrls">
-          <button class="tbtn go" onclick="startTimer(180)">⏱ Prep 3:00</button>
-          <button class="tbtn go" onclick="startTimer(240)">🎬 4:00</button>
+          <button class="tbtn go" onclick="startTimer(180)">Prep 3:00</button>
+          <button class="tbtn go" onclick="startTimer(240)">4:00</button>
           <button class="tbtn" onclick="pauseTimer()">⏸</button>
           <button class="tbtn" onclick="resetTimer()">↺</button>
         </div>
       </div>
-
       <div class="res-panel">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.3rem;">
-          <div class="ff" style="font-size:1.4rem;">📊 Live Results</div>
-          <div class="label" id="voter-count">0 votes</div>
+          <div class="ff" style="font-size:1.3rem;">Live Results</div>
+          <div class="label" id="vcount">0 votes</div>
         </div>
         <div class="vstatus closed" id="vstatus">Voting Closed</div>
-        <div id="results-container"></div>
+        <div id="res-container"></div>
       </div>
-
     </div>
   </div>
 </div>
@@ -351,75 +403,81 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 <div id="screen-student" class="screen">
   <div class="s-header">
     <div class="s-logo">TALK<span class="pop">BACK</span></div>
-    <div class="s-room">Room<strong id="s-room-code">----</strong></div>
+    <div class="s-rm">Room<strong id="s-code">----</strong></div>
   </div>
   <div class="sbody">
 
     <!-- Join -->
     <div class="jform" id="s-join">
-      <div style="font-size:3rem">🎭</div>
+      <div style="font-size:2.8rem">🎭</div>
       <div class="jtitle">Join a <span class="pop">Room!</span></div>
       <div class="label">Teacher's room code</div>
-      <input class="cinput" id="join-code" maxlength="4" placeholder="ABCD" oninput="this.value=this.value.toUpperCase()" style="max-width:220px;">
-      <div class="label" style="margin-top:.2rem;">Your name</div>
-      <input class="cinput" id="join-name" maxlength="20" placeholder="Your name" style="max-width:260px;font-size:1.3rem;letter-spacing:1px;">
+      <input class="ci" id="jcode" maxlength="4" placeholder="ABCD" oninput="this.value=this.value.toUpperCase()" style="max-width:210px;">
+      <div class="label" style="margin-top:.15rem;">Your name</div>
+      <input class="ci" id="jname" maxlength="20" placeholder="Your name" style="max-width:250px;font-size:1.2rem;letter-spacing:1px;">
       <div class="err hidden" id="join-err"></div>
-      <button class="cbtn pink" onclick="joinRoom()" style="max-width:260px;">Join ✨</button>
+      <button class="cb pink" onclick="joinRoom()" style="max-width:250px;">Join ✨</button>
     </div>
 
     <!-- Waiting -->
-    <div class="wstate hidden" id="s-waiting">
+    <div class="wstate hidden" id="s-wait">
       <div class="wblob">⏳</div>
       <div class="wmsg">Waiting…</div>
       <div class="wsub">Teacher will assign roles soon</div>
     </div>
 
     <!-- Performing -->
-    <div class="role-reveal hidden" id="s-performing">
+    <div class="role-reveal hidden" id="s-perf">
       <div class="role-card">
         <div class="role-header">
           <div class="role-blob">🎭</div>
-          <div>
-            <div class="label">Your role</div>
-            <div class="role-name" id="s-role-name"></div>
-          </div>
+          <div><div class="label">Your role</div><div class="role-name" id="s-role"></div></div>
         </div>
-        <div class="role-scenario" id="s-scenario-text"></div>
+        <div class="role-scenario" id="s-scenario"></div>
+        <div class="mem-ctx hidden" id="s-mem-ctx"></div>
       </div>
-      <div class="objective-card">
+      <div class="obj-card">
         <div class="obj-label">🔒 Secret Objective — only you see this</div>
-        <div class="obj-text" id="s-objective"></div>
-        <div class="obj-sub">Don't say it. Play it.</div>
+        <div class="obj-text" id="s-obj"></div>
+        <div class="obj-footer">Don't say it. Play it.</div>
       </div>
-      <div class="priv-comp hidden" id="s-priv-comp">
-        <div class="pc-label">⚡ Private Complication</div>
-        <div class="pc-text" id="s-priv-comp-text"></div>
+      <div class="priv-comp hidden" id="s-pc">
+        <div class="pc-label">⚡ Private — only you</div>
+        <div class="pc-text" id="s-pc-text"></div>
       </div>
-      <div class="intv-alert hidden" id="s-intv-perf">
-        <div class="intv-label">🙋 Audience Intervening</div>
-        <div class="intv-text" id="s-intv-perf-text"></div>
+      <div class="intv-broadcast hidden" id="s-intv-perf">
+        <div class="ib-label">🙋 Audience</div>
+        <div class="ib-text" id="s-intv-perf-text"></div>
+      </div>
+      <div class="ending-screen hidden" id="s-ending-perf">
+        <div class="ending-label">Scene Ending</div>
+        <div class="ending-text" id="s-ending-perf-text"></div>
       </div>
     </div>
 
     <!-- Audience -->
-    <div class="wstate hidden" id="s-audience">
+    <div class="wstate hidden" id="s-aud">
       <div class="aud-card" style="width:100%;">
         <div class="aud-title">👀 You're the Audience</div>
         <div class="aud-sub">Watch carefully — you'll vote after</div>
       </div>
-      <button class="intervention-btn hidden" id="s-intv-btn" onclick="audienceIntervene()">🙋 Intervene Now</button>
-      <div class="intv-alert hidden" id="s-intv-aud">
-        <div class="intv-label">🙋 Audience Intervening</div>
-        <div class="intv-text" id="s-intv-aud-text"></div>
+      <button class="intv-btn hidden" id="s-intv-btn" onclick="doIntervene()">🙋 Intervene Now</button>
+      <div class="intv-broadcast hidden" id="s-intv-aud">
+        <div class="ib-label">🙋 Audience</div>
+        <div class="ib-text" id="s-intv-aud-text"></div>
+      </div>
+      <div class="ending-screen hidden" id="s-ending-aud">
+        <div class="ending-label">Scene Ending</div>
+        <div class="ending-text" id="s-ending-aud-text"></div>
       </div>
       <div class="wblob">👁️</div>
-      <div class="wmsg" style="font-size:1.4rem;">Watch the scene</div>
+      <div class="wmsg" style="font-size:1.3rem;">Watch the scene</div>
     </div>
 
     <!-- Vote -->
     <div class="vform hidden" id="s-vote">
       <div class="vtitle">Rate the <span class="pop">Dialogue!</span> ⭐</div>
-      <div id="s-crit-blocks"></div>
+      <div id="s-crits"></div>
       <div class="err hidden" id="vote-err"></div>
       <button class="subvote" onclick="submitVote()">Submit! 🚀</button>
     </div>
@@ -427,7 +485,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
     <!-- Voted -->
     <div class="voted-st hidden" id="s-voted">
       <div class="voted-blob">✅</div>
-      <div class="ff" style="font-size:2.3rem;">You voted! 🎉</div>
+      <div class="ff" style="font-size:2.2rem;">You voted! 🎉</div>
       <div class="wsub">Waiting for the next round…</div>
     </div>
 
@@ -435,153 +493,154 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 </div>
 
 <script>
-// ── DATA ─────────────────────────────────────────────────────────
+// ── DATA ──────────────────────────────────────────────────────────
 
 const SCENARIOS = [
-  { text: "You've been messaging someone for three months but never met. You're finally at the same café. One of you is clearly less enthusiastic than their messages suggested.", roles: ["Person who suggested meeting","Person who is… surprised"] },
-  { text: "You and a close friend had a serious argument two days ago. Neither of you has apologised. Now you're stuck together on a five-hour bus journey.", roles: ["Person A — not convinced they were wrong","Person B — waiting for the apology"] },
-  { text: "You borrowed a significant amount of money from a close friend six months ago. You still haven't paid it back. They've just brought it up in front of other people.", roles: ["The borrower","The friend who's been patient long enough"] },
-  { text: "You're at the airport. Your partner wants to call off the trip — and possibly more than the trip. You have 90 minutes before the gate closes.", roles: ["Person who wants to leave","Person who wants to stay — and talk"] },
-  { text: "You discover mid-trip that your travel companion has been secretly planning to extend the trip by a week without telling you.", roles: ["The one who planned it","The one who just found out"] },
-  { text: "You're sharing a hostel room with a stranger. It's 1am, you have a 6am flight. They are very much awake and very much want to talk.", roles: ["The traveller who needs sleep","The very awake stranger"] },
-  { text: "You've just found out that your closest friend told other people something you shared in confidence.", roles: ["The one who found out","The friend who told people"] },
-  { text: "You missed your connection because your travel partner insisted on stopping to eat. They don't seem to think it's their fault.", roles: ["The one who missed the flight","The one who wanted to eat"] },
-  { text: "You're at border control. The officer is asking confusing questions. Your travel companion keeps giving different answers.", roles: ["Traveller A","Border control officer"] },
-  { text: "Your friend promised to cover your accommodation costs for the trip. Now they're saying they didn't actually say that.", roles: ["The one who remembers the promise","The one who says it never happened"] },
-  { text: "You've been away together two weeks and you've realised you find this person genuinely irritating. Four days left.", roles: ["Person A — done pretending","Person B — just noticed something is wrong"] },
-  { text: "You're meeting an ex for the first time since you broke up. You told everyone this was fine. It isn't fine.", roles: ["The one who said it was fine","The one who can tell it isn't"] }
+  {text:"You've been messaging someone for three months but never met. You're finally at the same café. One of you is clearly less enthusiastic than their messages suggested.",roles:["Person A","Person B"]},
+  {text:"You and a close friend had a serious argument two days ago. Neither of you has apologised. Now you're stuck together on a five-hour bus journey.",roles:["Person A","Person B"]},
+  {text:"You borrowed a significant amount of money from a close friend six months ago. You still haven't paid it back. They've just brought it up in front of other people.",roles:["The borrower","The lender"]},
+  {text:"You're at the airport. Your partner wants to call off the trip — and possibly more than the trip. You have 90 minutes before the gate closes.",roles:["Person A","Person B"]},
+  {text:"You discover mid-trip that your travel companion has been secretly planning to extend the trip by a week without telling you.",roles:["Person A","Person B"]},
+  {text:"You're sharing a hostel room with a stranger. It's 1am, you have a 6am flight. They are very much awake and very much want to talk.",roles:["The traveller","The stranger"]},
+  {text:"You've just found out that your closest friend told other people something you shared in confidence.",roles:["Person A","Person B"]},
+  {text:"You missed your connection because your travel partner insisted on stopping to eat. They don't seem to think it's their fault.",roles:["Person A","Person B"]},
+  {text:"You're at border control. The officer is asking confusing questions. Your travel companion keeps giving different answers.",roles:["The traveller","The officer"]},
+  {text:"Your friend promised to cover your accommodation costs for the trip. Now they're saying they didn't actually say that.",roles:["Person A","Person B"]},
+  {text:"You've been away together two weeks and you've realised you find this person genuinely irritating. Four days left.",roles:["Person A","Person B"]},
+  {text:"You're meeting an ex for the first time since you broke up. You told everyone this was fine. It isn't fine.",roles:["Person A","Person B"]}
 ];
 
-// Private objectives — written to create sincerity, not comedy
-const OBJECTIVES_A = [
-  "You are hiding something important. You don't plan to say what it is.",
-  "You already know how this conversation ends. You're stalling.",
-  "You are angrier than you're showing. Keep it underneath.",
-  "You are about to change your mind — but not yet.",
-  "You care more about this person than you want to admit.",
-  "You already made a decision before this conversation started.",
-  "You are trying to make the other person say something first.",
-  "There is something you almost say three times but don't.",
-  "You want to leave. But you keep finding reasons to stay.",
-  "You are not being entirely honest about how you feel."
+const OBJ_A = [
+  "You are hiding something. You don't plan to say what it is.",
+  "You already know how this ends. You're stalling.",
+  "You are angrier than you're showing.",
+  "You are about to change your mind. Not yet.",
+  "You care more about this than you want to.",
+  "You want to leave. You keep finding reasons to stay.",
+  "There is something you almost say. Three times.",
+  "You are not being entirely honest."
+];
+const OBJ_B = [
+  "They keep missing something. You need them to understand it.",
+  "You are waiting. You don't think it's coming.",
+  "You want to forgive them. You're not ready.",
+  "You are calmer than you feel.",
+  "You are deciding something. You haven't decided yet.",
+  "You are giving them one more chance. You haven't said so.",
+  "Something they said hurt. You didn't show it.",
+  "You said something wrong. You haven't admitted it."
 ];
 
-const OBJECTIVES_B = [
-  "You need the other person to understand something they keep missing.",
-  "You've heard this argument before. This time feels different.",
-  "You are waiting for an apology that probably won't come.",
-  "You want to forgive them. You're not ready yet.",
-  "You are pretending to be calmer than you are.",
-  "You know you said something wrong earlier. You haven't admitted it.",
-  "You are trying to figure out if this person still trusts you.",
-  "Something they just said hurt more than you let on.",
-  "You're deciding whether this relationship is worth the effort.",
-  "You are giving them one more chance without saying so."
-];
-
-// Private complications — asymmetric, one per performer
-const PRIV_COMP_A = [
+const PC_A = [
   "You just got a message. It changes your position. Don't show it.",
   "You realise you were wrong about something. Don't admit it yet.",
   "You suddenly feel like walking away. Don't — but feel it.",
   "Something the other person said just hurt you. Hide it.",
   "You have five minutes. After that, you're leaving no matter what."
 ];
-
-const PRIV_COMP_B = [
+const PC_B = [
   "You realise the other person is lying. Don't accuse them directly.",
   "You just decided something. You're not going to say it out loud.",
-  "You feel responsible for this situation. That feeling just got stronger.",
   "You want to apologise. Something is stopping you.",
-  "You've just understood something about this person you didn't before."
+  "You've just understood something about this person you didn't before.",
+  "You feel responsible for this situation. That feeling just got stronger."
 ];
 
-// Audience interventions — one at a time, single use
+// Audience interventions — scene-altering, not commentary
 const INTERVENTIONS = [
-  "Step in. Say one thing you've been thinking.",
-  "Ask one question neither of them has asked.",
-  "Tell one of them what you actually think they should do.",
-  "Say the thing they're both avoiding.",
-  "Tell them what this looks like from the outside."
+  "The person with less power speaks now.",
+  "Say the one thing that would end this conversation permanently.",
+  "You already know how this ends. Speak from there.",
+  "Something you said earlier wasn't true. Correct it.",
+  "Ask the question neither of you has been willing to ask."
 ];
+
+const ENDINGS = {
+  freeze: "Freeze. Hold that position.",
+  line: "One last thing each. Then nothing.",
+  decision: "Ten seconds. Say what you decide.",
+  verdict_changed: "What changed?",
+  verdict_unsaid: "What was left unsaid?",
+  verdict_truth: "Who avoided the truth?",
+  silent: "No more words."
+};
 
 const CRITERIA = [
-  { id:"c1", name:"Did this feel real?" },
-  { id:"c2", name:"Who communicated better?" },
-  { id:"c3", name:"Would you watch this as a TV show?" }
+  {id:"c1",name:"Did this feel real?"},
+  {id:"c2",name:"Who communicated better?"},
+  {id:"c3",name:"Would you watch this as a TV show?"}
 ];
 
-// ── STATE ────────────────────────────────────────────────────────
-let room = null, myId = null, myName = null;
-let timerInt = null, timerSec = 180, timerOn = false;
-let votes = {}, hasVoted = false, round = 0;
-let pool = [];
-let intvUsed = false; // per student, per round
+// ── STATE ─────────────────────────────────────────────────────────
+let room=null,myId=null,myName=null;
+let timerInt=null,timerSec=180,timerOn=false;
+let myVotes={},hasVoted=false,round=0;
+let pool=[];
+let intvUsed=false;
+let endingFired=false;
 
-// ── FIREBASE ─────────────────────────────────────────────────────
-function waitFB(fn){ if(window._firebaseReady)fn(); else document.addEventListener('firebaseReady',fn,{once:true}); }
-function r(path){ return window._ref(window._db, path); }
-function fset(path,val){ return window._set(r(path),val); }
-function fget(path){ return window._get(r(path)); }
-function fon(path,cb){ return window._onValue(r(path),cb); }
+// ── FIREBASE ──────────────────────────────────────────────────────
+function wfb(fn){if(window._fb)fn();else document.addEventListener('fb',fn,{once:true});}
+function r(p){return window._ref(window._db,p);}
+function fset(p,v){return window._set(r(p),v);}
+function fget(p){return window._get(r(p));}
+function fon(p,cb){return window._onValue(r(p),cb);}
 
-// ── NAV ──────────────────────────────────────────────────────────
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+// ── NAV ───────────────────────────────────────────────────────────
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-// ── TEACHER SETUP ────────────────────────────────────────────────
+// ── TEACHER SETUP ─────────────────────────────────────────────────
 function setupRoom(){
-  const code = document.getElementById('setup-code').value.trim().toUpperCase();
-  if(code.length!==4){ showErr('setup-err','Please enter exactly 4 letters'); return; }
-  waitFB(()=>{
-    fset(`rooms/${code}`,{voting:false,round:0,scenario:'',votes:{},performers:{},students:{},complication:'',intervention:''})
+  const code=document.getElementById('setup-code').value.trim().toUpperCase();
+  if(code.length!==4){showErr('setup-err','Please enter exactly 4 letters');return;}
+  wfb(()=>{
+    fset(`rooms/${code}`,{voting:false,round:0,scenario:'',votes:{},performers:{},students:{},privcomp:{},intervention:'',intervention_open:false,ending:'',memory:{}})
     .then(()=>{
       room=code;
-      document.getElementById('t-room-code').textContent=code;
+      document.getElementById('t-code').textContent=code;
       renderResults();
-      fon(`rooms/${room}/students`, updateRoster);
-      fon(`rooms/${room}/votes`, snap=>updateResults(snap.val()||{}));
+      fon(`rooms/${room}/students`,updateRoster);
+      fon(`rooms/${room}/votes`,snap=>updateResults(snap.val()||{}));
+      fon(`rooms/${room}/memory`,renderMemory);
       showScreen('screen-teacher');
     });
   });
 }
 
-// ── ROSTER ───────────────────────────────────────────────────────
+// ── ROSTER ────────────────────────────────────────────────────────
 function updateRoster(snap){
-  const students = snap.val()||{};
-  const ids = Object.keys(students);
-  document.getElementById('roster-count').textContent=`(${ids.length})`;
-  const list = document.getElementById('roster-list');
-  if(!ids.length){ list.innerHTML='<div class="roster-empty">Waiting for students…</div>'; return; }
+  const st=snap.val()||{};
+  const ids=Object.keys(st);
+  document.getElementById('r-count').textContent=`(${ids.length})`;
+  const el=document.getElementById('roster');
+  if(!ids.length){el.innerHTML='<div class="rempty">Waiting for students…</div>';return;}
   fget(`rooms/${room}/performers`).then(ps=>{
-    const perf = ps.val()||{};
-    list.innerHTML = ids.map(id=>{
-      const name = students[id].name||'?';
-      const role = perf[id]||'—';
-      const hot = role!=='audience'&&role!=='—';
-      return `<div class="ri ${hot?'on':'off'}"><span class="ri-name">${name}</span><span class="ri-role ${hot?'hot':''}">${role}</span></div>`;
+    const p=ps.val()||{};
+    el.innerHTML=ids.map(id=>{
+      const nm=st[id].name||'?';
+      const role=p[id]||'—';
+      const hot=role!=='audience'&&role!=='—';
+      return `<div class="ri ${hot?'on':'off'}"><span class="ri-name">${nm}</span><span class="ri-role ${hot?'hot':''}">${role}</span></div>`;
     }).join('');
   });
 }
 
-// ── STUDENT JOIN ─────────────────────────────────────────────────
+// ── STUDENT JOIN ──────────────────────────────────────────────────
 function joinRoom(){
-  const code = document.getElementById('join-code').value.trim().toUpperCase();
-  const name = document.getElementById('join-name').value.trim();
-  if(code.length!==4){ showErr('join-err','Enter a 4-letter code'); return; }
-  if(!name){ showErr('join-err','Enter your name'); return; }
-  waitFB(()=>{
+  const code=document.getElementById('jcode').value.trim().toUpperCase();
+  const name=document.getElementById('jname').value.trim();
+  if(code.length!==4){showErr('join-err','Enter a 4-letter code');return;}
+  if(!name){showErr('join-err','Enter your name');return;}
+  wfb(()=>{
     fget(`rooms/${code}`).then(snap=>{
-      if(!snap.exists()){ showErr('join-err','Room not found'); return; }
-      room=code; myName=name;
-      const ref = window._push(r(`rooms/${code}/students`));
-      myId = ref.key;
+      if(!snap.exists()){showErr('join-err','Room not found');return;}
+      room=code;myName=name;
+      const ref=window._push(r(`rooms/${code}/students`));
+      myId=ref.key;
       window._set(ref,{name}).then(()=>{
-        document.getElementById('s-room-code').textContent=code;
+        document.getElementById('s-code').textContent=code;
         document.getElementById('s-join').classList.add('hidden');
-        showSWaiting();
+        showS('s-wait');
         listenStudent();
       });
     });
@@ -589,87 +648,82 @@ function joinRoom(){
 }
 
 function listenStudent(){
-  // role assignment
-  fon(`rooms/${room}/performers/${myId}`, snap=>{
+  fon(`rooms/${room}/performers/${myId}`,snap=>{
     const role=snap.val();
-    if(!role) return;
+    if(!role)return;
     fget(`rooms/${room}/scenario`).then(ss=>{
-      if(role==='audience') showSAudience();
-      else showSPerforming(role, ss.val()||'');
+      if(role==='audience')showS('s-aud');
+      else showPerforming(role,ss.val()||'');
     });
   });
-  // voting
-  fon(`rooms/${room}/voting`, snap=>{
-    if(snap.val()&&!hasVoted) showSVote();
-  });
-  // new round reset
-  fon(`rooms/${room}/round`, snap=>{
+  fon(`rooms/${room}/voting`,snap=>{if(snap.val()&&!hasVoted)showS('s-vote',buildCrits);});
+  fon(`rooms/${room}/round`,snap=>{
     const nr=snap.val();
-    if(nr!==round&&nr>0){ round=nr; hasVoted=false; votes={}; intvUsed=false; }
+    if(nr!==round&&nr>0){round=nr;hasVoted=false;myVotes={};intvUsed=false;endingFired=false;}
   });
-  // private complication
-  fon(`rooms/${room}/privcomp/${myId}`, snap=>{
+  fon(`rooms/${room}/privcomp/${myId}`,snap=>{
     const t=snap.val()||'';
-    const el=document.getElementById('s-priv-comp');
-    if(t){ el.classList.remove('hidden'); el.classList.add('show'); document.getElementById('s-priv-comp-text').textContent=t; }
-    else{ el.classList.remove('show'); el.classList.add('hidden'); }
+    const el=document.getElementById('s-pc');
+    if(t){el.classList.remove('hidden');el.classList.add('show');document.getElementById('s-pc-text').textContent=t;}
+    else{el.classList.remove('show');el.classList.add('hidden');}
   });
-  // intervention unlock
-  fon(`rooms/${room}/intervention_open`, snap=>{
+  fon(`rooms/${room}/intervention_open`,snap=>{
     const open=snap.val();
     const btn=document.getElementById('s-intv-btn');
-    if(open&&!intvUsed){ btn.classList.remove('hidden'); btn.disabled=false; }
-    else{ btn.classList.add('hidden'); }
+    if(open&&!intvUsed){btn.classList.remove('hidden');btn.disabled=false;}
+    else btn.classList.add('hidden');
   });
-  // intervention broadcast
-  fon(`rooms/${room}/intervention`, snap=>{
+  fon(`rooms/${room}/intervention`,snap=>{
     const t=snap.val()||'';
-    ['s-intv-perf','s-intv-aud'].forEach(id=>{
-      const el=document.getElementById(id);
-      const txt=document.getElementById(id+'-text');
-      if(t){ el.classList.remove('hidden'); el.classList.add('show'); txt.textContent=t; }
-      else{ el.classList.remove('show'); el.classList.add('hidden'); }
-    });
+    showBroadcast('s-intv-perf','s-intv-perf-text',t);
+    showBroadcast('s-intv-aud','s-intv-aud-text',t);
+  });
+  fon(`rooms/${room}/ending`,snap=>{
+    const t=snap.val()||'';
+    showBroadcast('s-ending-perf','s-ending-perf-text',t);
+    showBroadcast('s-ending-aud','s-ending-aud-text',t);
   });
 }
 
-function showSWaiting(){ hideAll(['s-waiting']); }
-function showSAudience(){ hideAll(['s-audience']); }
-function showSPerforming(role,scenario){
-  hideAll(['s-performing']);
-  document.getElementById('s-role-name').textContent=role;
-  document.getElementById('s-scenario-text').textContent=scenario;
-  // assign objective based on position in performers
+function showBroadcast(elId,textId,text){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  if(text){el.classList.remove('hidden');el.classList.add('show');document.getElementById(textId).textContent=text;}
+  else{el.classList.remove('show');el.classList.add('hidden');}
+}
+
+function showPerforming(role,scenario){
+  showS('s-perf');
+  document.getElementById('s-role').textContent=role;
+  document.getElementById('s-scenario').textContent=scenario;
   fget(`rooms/${room}/performers`).then(ps=>{
-    const perf=ps.val()||{};
-    const ids=Object.keys(perf).filter(id=>perf[id]!=='audience');
-    const isA = ids[0]===myId;
-    const pool = isA ? OBJECTIVES_A : OBJECTIVES_B;
-    document.getElementById('s-objective').textContent=pool[Math.floor(Math.random()*pool.length)];
-  });
-}
-function showSVote(){ hideAll(['s-vote']); buildCrits(); }
-function hideAll(show){
-  ['s-waiting','s-audience','s-performing','s-vote','s-voted'].forEach(id=>{
-    document.getElementById(id).classList.toggle('hidden', !show.includes(id));
+    const p=ps.val()||{};
+    const ids=Object.keys(p).filter(id=>p[id]!=='audience');
+    const isA=ids[0]===myId;
+    const pool=isA?OBJ_A:OBJ_B;
+    document.getElementById('s-obj').textContent=pool[Math.floor(Math.random()*pool.length)];
   });
 }
 
-// ── AUDIENCE INTERVENTION ────────────────────────────────────────
-function audienceIntervene(){
-  if(intvUsed) return;
+function showS(id,cb){
+  ['s-wait','s-aud','s-perf','s-vote','s-voted'].forEach(i=>document.getElementById(i).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  if(cb)cb();
+}
+
+// ── AUDIENCE INTERVENTION ─────────────────────────────────────────
+function doIntervene(){
+  if(intvUsed)return;
   intvUsed=true;
-  const text = INTERVENTIONS[Math.floor(Math.random()*INTERVENTIONS.length)];
-  const label = `${myName}: "${text}"`;
-  fset(`rooms/${room}/intervention`, label);
-  fset(`rooms/${room}/intervention_open`, false);
-  document.getElementById('s-intv-btn').disabled=true;
+  const prompt=INTERVENTIONS[Math.floor(Math.random()*INTERVENTIONS.length)];
+  fset(`rooms/${room}/intervention`,`${myName}: "${prompt}"`);
+  fset(`rooms/${room}/intervention_open`,false);
   document.getElementById('s-intv-btn').classList.add('hidden');
 }
 
-// ── VOTE ────────────────────────────────────────────────────────
+// ── VOTE ──────────────────────────────────────────────────────────
 function buildCrits(){
-  document.getElementById('s-crit-blocks').innerHTML = CRITERIA.map(c=>`
+  document.getElementById('s-crits').innerHTML=CRITERIA.map(c=>`
     <div class="vcrit">
       <div class="vc-name">${c.name}</div>
       <div class="srow">${[1,2,3,4,5].map(n=>`<button class="sbtn" data-c="${c.id}" data-v="${n}" onclick="pickStar(this,'${c.id}',${n})">★</button>`).join('')}</div>
@@ -677,134 +731,163 @@ function buildCrits(){
 }
 function pickStar(btn,cid,val){
   document.querySelectorAll(`.sbtn[data-c="${cid}"]`).forEach(b=>b.classList.toggle('lit',parseInt(b.dataset.v)<=val));
-  votes[cid]=val;
+  myVotes[cid]=val;
 }
 function submitVote(){
-  if(Object.keys(votes).length<CRITERIA.length){ showErr('vote-err','Rate all 3 ✨'); return; }
-  const vid='v_'+Math.random().toString(36).slice(2,9);
-  fset(`rooms/${room}/votes/${vid}`,votes).then(()=>{
-    hasVoted=true;
-    hideAll(['s-voted']);
+  if(Object.keys(myVotes).length<CRITERIA.length){showErr('vote-err','Rate all 3 ✨');return;}
+  fset(`rooms/${room}/votes/v_${Math.random().toString(36).slice(2,9)}`,myVotes).then(()=>{
+    hasVoted=true; showS('s-voted');
   });
 }
 
-// ── TEACHER CONTROLS ─────────────────────────────────────────────
+// ── TEACHER: NEW ROUND ────────────────────────────────────────────
 function newRound(){
-  if(!room) return;
+  if(!room)return;
   const s=SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)];
   document.getElementById('sc-text').textContent=s.text;
-  document.getElementById('sc-roles').innerHTML=s.roles.map(r=>`<div class="sc-role">${r}</div>`).join('');
-  document.getElementById('comp-display').classList.remove('show');
+  document.getElementById('sc-roles').innerHTML=s.roles.map(x=>`<div class="sc-role">${x}</div>`).join('');
+  document.getElementById('comp-note').classList.remove('show');
+  document.getElementById('intv-note').classList.remove('show');
+  document.getElementById('btn-intv').textContent='Unlock Audience Intervention';
+  document.getElementById('btn-intv').disabled=false;
+  document.getElementById('ending-drawer').classList.remove('open');
+  document.querySelectorAll('.ending-option').forEach(b=>{b.disabled=false;b.classList.remove('fired');});
 
   fget(`rooms/${room}/students`).then(snap=>{
-    const students=snap.val()||{};
-    const ids=Object.keys(students);
-    if(ids.length<2){ alert('Need at least 2 students!'); return; }
-
-    if(pool.length<2) pool=[...ids].sort(()=>Math.random()-.5);
-    const p1=pool.shift(), p2=pool.shift();
-
-    const performers={};
+    const st=snap.val()||{};
+    const ids=Object.keys(st);
+    if(ids.length<2){alert('Need at least 2 students!');return;}
+    if(pool.length<2)pool=[...ids].sort(()=>Math.random()-.5);
+    const p1=pool.shift(),p2=pool.shift();
+    const perf={};
     ids.forEach(id=>{
-      if(id===p1) performers[id]=s.roles[0];
-      else if(id===p2) performers[id]=s.roles[1];
-      else performers[id]='audience';
+      if(id===p1)perf[id]=s.roles[0];
+      else if(id===p2)perf[id]=s.roles[1];
+      else perf[id]='audience';
     });
-
     round++;
     fset(`rooms/${room}/round`,round);
     fset(`rooms/${room}/scenario`,s.text);
     fset(`rooms/${room}/votes`,{});
     fset(`rooms/${room}/voting`,false);
-    fset(`rooms/${room}/complication`,'');
+    fset(`rooms/${room}/privcomp`,{});
     fset(`rooms/${room}/intervention`,'');
     fset(`rooms/${room}/intervention_open`,false);
-    fset(`rooms/${room}/privcomp`,{});
-    fset(`rooms/${room}/performers`,performers);
-
-    // enable controls
-    document.getElementById('btn-comp').disabled=false;
-    document.getElementById('btn-intv').disabled=false;
-    document.getElementById('btn-vote-open').disabled=false;
-    document.getElementById('btn-vote-close').disabled=true;
-    updateVStatus(false);
+    fset(`rooms/${room}/ending`,'');
+    fset(`rooms/${room}/performers`,perf);
+    // auto-log this scene to memory
+    const memKey = 'm_'+round;
+    fset(`rooms/${room}/memory/${memKey}`,{round,text:`Scene ${round}: ${s.roles[0]} vs ${s.roles[1]}`});
+    ['btn-comp','btn-intv','btn-ending','btn-vopen'].forEach(id=>document.getElementById(id).disabled=false);
+    document.getElementById('btn-vclose').disabled=true;
+    updateVS(false);
     renderResults({});
-    document.getElementById('voter-count').textContent='0 votes';
+    document.getElementById('vcount').textContent='0 votes';
     resetTimer();
   });
 }
 
-function firePrivateComplications(){
-  if(!room) return;
+function firePrivateComp(){
+  if(!room)return;
   fget(`rooms/${room}/performers`).then(snap=>{
-    const perf=snap.val()||{};
-    const ids=Object.keys(perf).filter(id=>perf[id]!=='audience');
-    if(ids.length>=1) fset(`rooms/${room}/privcomp/${ids[0]}`, PRIV_COMP_A[Math.floor(Math.random()*PRIV_COMP_A.length)]);
-    if(ids.length>=2) fset(`rooms/${room}/privcomp/${ids[1]}`, PRIV_COMP_B[Math.floor(Math.random()*PRIV_COMP_B.length)]);
-    // also show teacher a generic broadcast label
-    const broadcastNote = "⚡ Private complications sent to both performers";
-    document.getElementById('comp-broadcast-text').textContent=broadcastNote;
-    document.getElementById('comp-display').classList.add('show');
+    const p=snap.val()||{};
+    const ids=Object.keys(p).filter(id=>p[id]!=='audience');
+    if(ids[0])fset(`rooms/${room}/privcomp/${ids[0]}`,PC_A[Math.floor(Math.random()*PC_A.length)]);
+    if(ids[1])fset(`rooms/${room}/privcomp/${ids[1]}`,PC_B[Math.floor(Math.random()*PC_B.length)]);
+    const note=document.getElementById('comp-note');
+    document.getElementById('comp-note-text').textContent='⚡ Different private complications sent to each performer.';
+    note.classList.add('show');
   });
 }
 
-function fireIntervention(){
-  if(!room) return;
-  fset(`rooms/${room}/intervention_open`, true);
+function unlockIntervention(){
   fset(`rooms/${room}/intervention`,'');
-  document.getElementById('btn-intv').textContent='🙋 Intervention Unlocked…';
+  fset(`rooms/${room}/intervention_open`,true);
+  document.getElementById('btn-intv').textContent='Waiting for audience…';
   document.getElementById('btn-intv').disabled=true;
+  document.getElementById('intv-note').classList.add('show');
+}
+
+function toggleEndingDrawer(){
+  document.getElementById('ending-drawer').classList.toggle('open');
+}
+
+function fireEnding(btn,key){
+  if(endingFired)return;
+  endingFired=true;
+  const text=ENDINGS[key];
+  fset(`rooms/${room}/ending`,text);
+  btn.classList.add('fired');
+  btn.disabled=true;
+  // disable others
+  document.querySelectorAll('.ending-option').forEach(b=>{if(b!==btn)b.disabled=true;});
 }
 
 function openVoting(){
   fset(`rooms/${room}/voting`,true);
-  document.getElementById('btn-vote-open').disabled=true;
-  document.getElementById('btn-vote-close').disabled=false;
-  updateVStatus(true);
+  document.getElementById('btn-vopen').disabled=true;
+  document.getElementById('btn-vclose').disabled=false;
+  updateVS(true);
 }
 function closeVoting(){
   fset(`rooms/${room}/voting`,false);
-  document.getElementById('btn-vote-open').disabled=false;
-  document.getElementById('btn-vote-close').disabled=true;
-  updateVStatus(false);
+  document.getElementById('btn-vopen').disabled=false;
+  document.getElementById('btn-vclose').disabled=true;
+  updateVS(false);
 }
-function updateVStatus(open){
+function updateVS(open){
   const b=document.getElementById('vstatus');
   b.textContent=open?'🟢 Voting Open!':'⛔ Voting Closed';
   b.className='vstatus '+(open?'open':'closed');
 }
 
-// ── RESULTS ──────────────────────────────────────────────────────
+// ── RESULTS ───────────────────────────────────────────────────────
 function updateResults(obj){
   const list=Object.values(obj);
-  document.getElementById('voter-count').textContent=`${list.length} vote${list.length!==1?'s':''}`;
-  const t={};
-  CRITERIA.forEach(c=>{ t[c.id]=[0,0,0,0,0]; });
-  list.forEach(v=>CRITERIA.forEach(c=>{ if(v[c.id]) t[c.id][v[c.id]-1]++; }));
+  document.getElementById('vcount').textContent=`${list.length} vote${list.length!==1?'s':''}`;
+  const t={};CRITERIA.forEach(c=>{t[c.id]=[0,0,0,0,0];});
+  list.forEach(v=>CRITERIA.forEach(c=>{if(v[c.id])t[c.id][v[c.id]-1]++;}));
   renderResults(t);
 }
-
 function renderResults(t){
-  const el=document.getElementById('results-container');
-  if(!t){ el.innerHTML=CRITERIA.map(c=>`<div class="crit"><div class="crit-name">${c.name}</div><div class="sbar">${[1,2,3,4,5].map(n=>`<div class="spill s${n}">★${n}</div><div class="scnt">–</div>`).join('')}<div class="avg">–</div></div></div>`).join(''); return; }
+  const el=document.getElementById('res-container');
+  if(!t){el.innerHTML=CRITERIA.map(c=>`<div class="crit"><div class="crit-name">${c.name}</div><div class="sbar">${[1,2,3,4,5].map(n=>`<div class="spill s${n}">★${n}</div><div class="scnt">–</div>`).join('')}<div class="avg">–</div></div></div>`).join('');return;}
   el.innerHTML=CRITERIA.map(c=>{
     const d=t[c.id]||[0,0,0,0,0];
-    const sum=d.reduce((a,v,i)=>a+v*(i+1),0);
-    const cnt=d.reduce((a,v)=>a+v,0);
+    const sum=d.reduce((a,v,i)=>a+v*(i+1),0),cnt=d.reduce((a,v)=>a+v,0);
     const avg=cnt>0?(sum/cnt).toFixed(1):'–';
     return `<div class="crit"><div class="crit-name">${c.name}</div><div class="sbar">${d.map((n,i)=>`<div class="spill s${i+1}" style="min-width:${24+n*7}px">★${i+1}</div><div class="scnt">${n}</div>`).join('')}<div class="avg">${avg}</div></div></div>`;
   }).join('');
 }
 
-// ── TIMER ────────────────────────────────────────────────────────
-function startTimer(s){ clearInterval(timerInt);timerSec=s;timerOn=true;updTimer();timerInt=setInterval(()=>{if(timerSec<=0){clearInterval(timerInt);timerOn=false;return;}timerSec--;updTimer();},1000);}
-function pauseTimer(){ if(timerOn){clearInterval(timerInt);timerOn=false;}else if(timerSec>0){timerOn=true;timerInt=setInterval(()=>{if(!timerSec){clearInterval(timerInt);return;}timerSec--;updTimer();},1000);} }
-function resetTimer(){ clearInterval(timerInt);timerOn=false;timerSec=180;updTimer(); }
-function updTimer(){ const m=Math.floor(timerSec/60),s=timerSec%60;const el=document.getElementById('timer-disp');el.textContent=`${m}:${s.toString().padStart(2,'0')}`;el.classList.toggle('warn',timerSec<=30&&timerSec>0); }
+// ── MEMORY ────────────────────────────────────────────────────────
+function addMemory(){
+  const input=document.getElementById('memory-input');
+  const text=input.value.trim();
+  if(!text||!room)return;
+  const key='m_'+Date.now();
+  fset(`rooms/${room}/memory/${key}`,{round,text});
+  input.value='';
+}
 
-// ── UTILS ────────────────────────────────────────────────────────
-function toggleScaffold(){ document.getElementById('scaf-panel').classList.toggle('open'); }
-function showErr(id,msg){ const el=document.getElementById(id);el.textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3000); }
+function renderMemory(snap){
+  const mem=snap.val()||{};
+  const el=document.getElementById('memory-log');
+  const entries=Object.values(mem).sort((a,b)=>a.round-b.round);
+  if(!entries.length){el.innerHTML='<div class="memory-empty">No scenes yet.</div>';return;}
+  el.innerHTML=entries.map(e=>`<div class="memory-item"><span class="memory-round">R${e.round}</span><span class="memory-text">${e.text}</span></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────
+function startTimer(s){clearInterval(timerInt);timerSec=s;timerOn=true;updT();timerInt=setInterval(()=>{if(timerSec<=0){clearInterval(timerInt);timerOn=false;return;}timerSec--;updT();},1000);}
+function pauseTimer(){if(timerOn){clearInterval(timerInt);timerOn=false;}else if(timerSec>0){timerOn=true;timerInt=setInterval(()=>{if(!timerSec){clearInterval(timerInt);return;}timerSec--;updT();},1000);}}
+function resetTimer(){clearInterval(timerInt);timerOn=false;timerSec=180;updT();}
+function updT(){const m=Math.floor(timerSec/60),s=timerSec%60;const el=document.getElementById('tdisp');el.textContent=`${m}:${s.toString().padStart(2,'0')}`;el.classList.toggle('warn',timerSec<=30&&timerSec>0);}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function toggleScaf(){document.getElementById('scaf').classList.toggle('open');}
+function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3000);}
 
 renderResults();
 </script>
