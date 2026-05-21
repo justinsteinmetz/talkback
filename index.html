@@ -61,7 +61,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .ltitle{font-family:var(--ff);font-size:clamp(2.2rem,8vw,5.5rem);line-height:1;}
 .ltitle .pop{color:var(--pink);}
 .lsub{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:#666;margin:.6rem 0 .4rem;white-space:nowrap;}
-.lthesis{font-size:.65rem;color:#555;font-style:italic;margin-bottom:1.8rem;line-height:1.5;max-width:280px;}
+.lthesis{font-size:.68rem;color:#444;font-style:italic;margin-bottom:2rem;margin-top:.5rem;line-height:1.6;max-width:300px;letter-spacing:.01em;}
 .rbtn{font-family:var(--ff);font-size:1.4rem;padding:.9rem 1.5rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;letter-spacing:1px;}
 .rbtn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
 .rbtn.t{background:var(--pink);color:#fff;} .rbtn.s{background:var(--mint);color:var(--ink);}
@@ -94,7 +94,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 /* scenario */
 .sc-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.1rem;position:relative;overflow:hidden;}
 .sc-card::after{content:'💬';font-size:3.5rem;position:absolute;right:-.3rem;bottom:-.3rem;opacity:.15;pointer-events:none;}
-.sc-text{font-family:var(--ff);font-size:clamp(.9rem,1.6vw,1.2rem);line-height:1.35;margin:.3rem 0 .7rem;}
+.sc-text{font-family:var(--ff);font-size:clamp(.9rem,1.6vw,1.2rem);line-height:1.45;margin:.4rem 0 .8rem;}
 .sc-roles{display:flex;flex-wrap:wrap;gap:.35rem;}
 .sc-role{background:var(--white);border:2px solid var(--ink);border-radius:20px;padding:.18rem .55rem;font-size:.6rem;box-shadow:2px 2px 0 var(--ink);}
 
@@ -148,6 +148,10 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .memory-round{font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--pink);white-space:nowrap;padding-top:.1rem;}
 .memory-text{font-size:.65rem;line-height:1.35;color:var(--ink);}
 
+/* rhythm cues */
+.rhythm-cues{display:flex;flex-direction:column;gap:.2rem;padding:.3rem 0 .1rem;}
+.rhythm-cue{font-size:.58rem;color:#b0aca5;font-style:italic;line-height:1.6;padding-left:.5rem;border-left:2px solid #d8d4cc;}
+
 /* scaffold */
 .scaf-tog{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;background:var(--lav);border:var(--b);border-radius:20px;padding:.32rem .85rem;cursor:pointer;box-shadow:var(--shsm);align-self:flex-start;transition:transform .1s;}
 .scaf-tog:hover{transform:translate(-1px,-1px);}
@@ -164,7 +168,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .s-logo .pop{color:var(--pink);}
 .s-rm{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#555;text-align:right;}
 .s-rm strong{font-family:var(--ff);font-size:1.3rem;color:var(--ink);display:block;line-height:1.1;}
-.sbody{flex:1;padding:1.4rem;display:flex;flex-direction:column;gap:.9rem;max-width:460px;margin:0 auto;width:100%;}
+.sbody{flex:1;padding:1.5rem 1.4rem 2rem;display:flex;flex-direction:column;gap:1rem;max-width:460px;margin:0 auto;width:100%;}
 
 /* join */
 .jform{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;}
@@ -172,33 +176,39 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .jtitle .pop{color:var(--pink);}
 
 /* waiting */
-.wstate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:.9rem;text-align:center;padding:2rem;}
-.wblob{width:85px;height:85px;background:var(--yellow);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;box-shadow:var(--sh);animation:float 2.5s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.wmsg{font-family:var(--ff);font-size:1.7rem;}
-.wsub{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa;}
+.wstate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1.1rem;text-align:center;padding:2.5rem 2rem;}
+.wblob{width:85px;height:85px;background:var(--yellow);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;box-shadow:var(--sh);animation:float 3.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.wmsg{font-family:var(--ff);font-size:1.5rem;opacity:.85;}
+.wsub{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:#bbb;}
 
 /* role card — emotional contrast */
-.role-reveal{display:flex;flex-direction:column;gap:.9rem;padding:.2rem 0;}
+.role-reveal{display:flex;flex-direction:column;gap:1.1rem;padding:.3rem 0;}
+.role-reveal > *{animation:fadein .5s ease both;}
+.role-reveal > *:nth-child(1){animation-delay:.05s;}
+.role-reveal > *:nth-child(2){animation-delay:.25s;}
+.role-reveal > *:nth-child(3){animation-delay:.5s;}
+.role-reveal > *:nth-child(4){animation-delay:.75s;}
 .role-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;}
 .role-header{display:flex;align-items:center;gap:.65rem;margin-bottom:.65rem;}
 .role-blob{width:46px;height:46px;background:var(--pink);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:var(--shsm);flex-shrink:0;}
-.role-name{font-family:var(--ff);font-size:1.4rem;line-height:1.1;}
-.role-scenario{font-size:.72rem;line-height:1.45;color:#333;border-top:2px dashed rgba(0,0,0,.15);padding-top:.65rem;margin-top:.25rem;}
+.role-name{font-family:var(--ff);font-size:1.5rem;line-height:1.15;letter-spacing:.3px;}
+.role-scenario{font-size:.72rem;line-height:1.55;color:#444;border-top:2px dashed rgba(0,0,0,.12);padding-top:.8rem;margin-top:.4rem;}
 .mem-ctx{font-size:.6rem;color:#888;font-style:italic;border-top:1px dashed rgba(0,0,0,.1);padding-top:.45rem;margin-top:.35rem;line-height:1.4;}
 
 /* objective — dark, quiet, heavy */
-.obj-card{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.5rem 1.4rem;}
+.obj-card{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.6rem 1.5rem;animation:fadein .6s ease both;}
 .obj-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.15em;color:var(--pink);margin-bottom:.4rem;}
-.obj-text{font-family:var(--ff);font-size:1.25rem;color:var(--yellow);line-height:1.5;}
-.obj-footer{font-size:.58rem;color:#666;margin-top:.5rem;letter-spacing:.04em;font-style:italic;}
+.obj-text{font-family:var(--ff);font-size:1.25rem;color:var(--yellow);line-height:1.6;letter-spacing:.2px;}
+.obj-footer{font-size:.56rem;color:#555;margin-top:.7rem;letter-spacing:.06em;font-style:italic;opacity:.8;}
 
 /* private complication — dark pop */
-.priv-comp{display:none;background:#2a1a1a;border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem 1.4rem;}
-.priv-comp.show{display:block;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+.priv-comp{display:none;background:#2a1a1a;border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.4rem 1.5rem;}
+.priv-comp.show{display:block;animation:fadein .5s ease both;}
 @keyframes popin{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+@keyframes fadein{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 .pc-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.14em;color:var(--coral);margin-bottom:.3rem;}
-.pc-text{font-family:var(--ff);font-size:1.1rem;color:#fff;line-height:1.3;}
+.pc-text{font-family:var(--ff);font-size:1.15rem;color:#fff;line-height:1.45;letter-spacing:.1px;}
 
 /* audience card */
 .aud-card{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;text-align:center;}
@@ -206,22 +216,22 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .aud-sub{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#555;}
 
 /* intervention button — audience */
-.intv-btn{font-family:var(--ff);font-size:1.3rem;padding:.85rem;border:var(--b);border-radius:var(--r);background:var(--coral);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;animation:pulse-sh 1.8s infinite;}
+.intv-btn{font-family:var(--ff);font-size:1.3rem;padding:.85rem;border:var(--b);border-radius:var(--r);background:var(--coral);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
 .intv-btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
 .intv-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;animation:none;}
-@keyframes pulse-sh{0%,100%{box-shadow:var(--sh)}50%{box-shadow:5px 5px 0 var(--coral)}}
+
 
 /* ending — on all student screens, heavy weight */
-.ending-screen{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:2rem 1.6rem;text-align:center;}
-.ending-screen.show{display:block;animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
-.ending-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.16em;color:#666;margin-bottom:.5rem;}
-.ending-text{font-family:var(--ff);font-size:clamp(1.4rem,4.5vw,2rem);color:var(--yellow);line-height:1.35;letter-spacing:.5px;}
+.ending-screen{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:2.2rem 1.8rem;text-align:center;}
+.ending-screen.show{display:block;animation:fadein .7s ease both;}
+.ending-label{font-size:.52rem;text-transform:uppercase;letter-spacing:.2em;color:#555;margin-bottom:.8rem;}
+.ending-text{font-family:var(--ff);font-size:clamp(1.5rem,5vw,2.2rem);color:var(--yellow);line-height:1.4;letter-spacing:.5px;}
 
 /* intervention broadcast */
-.intv-broadcast{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:.85rem 1rem;text-align:center;}
-.intv-broadcast.show{display:block;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+.intv-broadcast{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem 1.2rem;text-align:center;}
+.intv-broadcast.show{display:block;animation:fadein .5s ease both;}
 .ib-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.14em;color:var(--coral);margin-bottom:.25rem;}
-.ib-text{font-family:var(--ff);font-size:1.15rem;color:var(--yellow);line-height:1.3;}
+.ib-text{font-family:var(--ff);font-size:1.2rem;color:var(--yellow);line-height:1.45;letter-spacing:.1px;}
 
 /* vote */
 .vform{display:flex;flex-direction:column;gap:.85rem;}
@@ -238,7 +248,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 .subvote:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
 
 /* voted */
-.voted-st{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:.9rem;text-align:center;padding:2rem;}
+.voted-st{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1.2rem;text-align:center;padding:3rem 2rem;}
 .voted-blob{width:95px;height:95px;background:var(--mint);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:var(--sh);animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
 </style>
 </head>
@@ -251,7 +261,6 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
   <span class="deco d5">🤝</span><span class="deco d6">💬</span>
   <div class="card" style="max-width:480px;width:100%;padding:2.5rem 1.5rem;text-align:center;overflow:hidden;position:relative;z-index:1;">
     <div class="ltitle">TALK<span class="pop">BACK</span></div>
-    <div class="lsub">relationships · communication · travel</div>
     <div class="lthesis">Communication is performance under emotional pressure.</div>
     <div style="display:flex;flex-direction:column;gap:.75rem;">
       <button class="rbtn t" onclick="showScreen('screen-setup')">👩‍🏫 I'm the Teacher</button>
@@ -268,7 +277,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
     <div class="label">4-letter room code</div>
     <input class="ci" id="setup-code" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
     <div class="err hidden" id="setup-err"></div>
-    <button class="cb pink" onclick="setupRoom()">Create Room ✨</button>
+    <button class="cb pink" onclick="setupRoom()">Create Room</button>
     <button class="cb yellow sm" onclick="showScreen('screen-landing')">← Back</button>
   </div>
 </div>
@@ -289,6 +298,12 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
     <div class="director">
       <div class="dir-title">Director</div>
       <div class="dir-philosophy">Push tension, not humiliation.</div>
+      <div class="rhythm-cues" id="rhythm-cues">
+        <div class="rhythm-cue">Let silence sit.</div>
+        <div class="rhythm-cue">Interrupt when energy stabilises.</div>
+        <div class="rhythm-cue">Don't rescue the scene too early.</div>
+        <div class="rhythm-cue">Endings should surprise, not conclude.</div>
+      </div>
 
       <!-- Roster -->
       <div>
@@ -306,7 +321,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
           <div class="sc-text" id="sc-text">Press Start Scene to begin</div>
           <div class="sc-roles" id="sc-roles"></div>
         </div>
-        <button class="cb yellow" onclick="newRound()">⟳ Start New Scene</button>
+        <button class="cb yellow" onclick="newRound()">New Scene</button>
       </div>
       <hr class="dir-div">
 
@@ -324,15 +339,15 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
       <!-- Ending -->
       <div style="display:flex;flex-direction:column;gap:.45rem;">
         <div class="label">End the Scene</div>
-        <div class="dir-hint">Fire one ending. Scenes should land, not dissolve.</div>
+        
         <button class="cb dark sm" id="btn-ending" onclick="toggleEndingDrawer()" disabled>Choose Ending</button>
         <div class="ending-drawer" id="ending-drawer">
-          <div class="label" style="color:rgba(255,255,255,.5);margin-bottom:.1rem;">Fire one — can't undo</div>
+          
           <button class="ending-option" onclick="fireEnding(this,'freeze')">Freeze Frame</button>
           <button class="ending-option" onclick="fireEnding(this,'line')">Final Line</button>
           <button class="ending-option" onclick="fireEnding(this,'decision')">Forced Decision</button>
           <div class="ending-option-group">
-            <div class="ending-group-label">👥 Audience Reflection —</div>
+            <div class="ending-group-label">Audience</div>
             <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_changed')">What changed?</button>
             <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_unsaid')">What was left unsaid?</button>
             <button class="ending-option ending-sub" onclick="fireEnding(this,'verdict_truth')">Who avoided the truth?</button>
@@ -368,7 +383,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
         <div class="scaf-cat">Disagreeing politely</div>
         <ul class="scaf-list"><li>I see your point, but…</li><li>That's fair, although…</li><li>I'd actually argue…</li><li>Not necessarily…</li></ul>
         <div class="scaf-cat">Clarifying</div>
-        <ul class="scaf-list"><li>What exactly do you mean?</li><li>Could you say more?</li><li>So you're saying…?</li></ul>
+        <ul class="scaf-list"><li>What exactly do you mean?</li><li>Could you say more?</li><li>So you're saying…?</li><li>Just to check…</li></ul>
         <div class="scaf-cat">Suggesting</div>
         <ul class="scaf-list"><li>What if we…?</li><li>How about…?</li><li>One option would be…</li></ul>
         <div class="scaf-cat">Buying time</div>
@@ -392,7 +407,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
           <div class="ff" style="font-size:1.3rem;">Live Results</div>
           <div class="label" id="vcount">0 votes</div>
         </div>
-        <div class="vstatus closed" id="vstatus">Voting Closed</div>
+        <div class="vstatus closed" id="vstatus">—</div>
         <div id="res-container"></div>
       </div>
     </div>
@@ -416,7 +431,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
       <div class="label" style="margin-top:.15rem;">Your name</div>
       <input class="ci" id="jname" maxlength="20" placeholder="Your name" style="max-width:250px;font-size:1.2rem;letter-spacing:1px;">
       <div class="err hidden" id="join-err"></div>
-      <button class="cb pink" onclick="joinRoom()" style="max-width:250px;">Join ✨</button>
+      <button class="cb pink" onclick="joinRoom()" style="max-width:250px;">Join</button>
     </div>
 
     <!-- Waiting -->
@@ -437,12 +452,12 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
         <div class="mem-ctx hidden" id="s-mem-ctx"></div>
       </div>
       <div class="obj-card">
-        <div class="obj-label">🔒 Secret Objective — only you see this</div>
+        <div class="obj-label">Secret Objective</div>
         <div class="obj-text" id="s-obj"></div>
         <div class="obj-footer">Don't say it. Play it.</div>
       </div>
       <div class="priv-comp hidden" id="s-pc">
-        <div class="pc-label">⚡ Private — only you</div>
+        <div class="pc-label">Private</div>
         <div class="pc-text" id="s-pc-text"></div>
       </div>
       <div class="intv-broadcast hidden" id="s-intv-perf">
@@ -459,7 +474,7 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
     <div class="wstate hidden" id="s-aud">
       <div class="aud-card" style="width:100%;">
         <div class="aud-title">👀 You're the Audience</div>
-        <div class="aud-sub">Watch carefully — you'll vote after</div>
+        
       </div>
       <button class="intv-btn hidden" id="s-intv-btn" onclick="doIntervene()">🙋 Intervene Now</button>
       <div class="intv-broadcast hidden" id="s-intv-aud">
@@ -479,13 +494,13 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
       <div class="vtitle">Rate the <span class="pop">Dialogue!</span> ⭐</div>
       <div id="s-crits"></div>
       <div class="err hidden" id="vote-err"></div>
-      <button class="subvote" onclick="submitVote()">Submit! 🚀</button>
+      <button class="subvote" onclick="submitVote()">Submit</button>
     </div>
 
     <!-- Voted -->
     <div class="voted-st hidden" id="s-voted">
-      <div class="voted-blob">✅</div>
-      <div class="ff" style="font-size:2.2rem;">You voted! 🎉</div>
+      <div class="voted-blob" style="font-size:2rem;">·</div>
+      <div class="ff" style="font-size:2rem;letter-spacing:.5px;">Done.</div>
       <div class="wsub">Waiting for the next round…</div>
     </div>
 
@@ -496,26 +511,26 @@ body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:1
 // ── DATA ──────────────────────────────────────────────────────────
 
 const SCENARIOS = [
-  {text:"You've been messaging someone for three months but never met. You're finally at the same café. One of you is clearly less enthusiastic than their messages suggested.",roles:["Person A","Person B"]},
+  {text:"You were close once. Something shifted and neither of you named it. You're in the same city for the first time in a year.",roles:["Person A","Person B"]},
   {text:"You and a close friend had a serious argument two days ago. Neither of you has apologised. Now you're stuck together on a five-hour bus journey.",roles:["Person A","Person B"]},
   {text:"You borrowed a significant amount of money from a close friend six months ago. You still haven't paid it back. They've just brought it up in front of other people.",roles:["The borrower","The lender"]},
-  {text:"You're at the airport. Your partner wants to call off the trip — and possibly more than the trip. You have 90 minutes before the gate closes.",roles:["Person A","Person B"]},
-  {text:"You discover mid-trip that your travel companion has been secretly planning to extend the trip by a week without telling you.",roles:["Person A","Person B"]},
-  {text:"You're sharing a hostel room with a stranger. It's 1am, you have a 6am flight. They are very much awake and very much want to talk.",roles:["The traveller","The stranger"]},
-  {text:"You've just found out that your closest friend told other people something you shared in confidence.",roles:["Person A","Person B"]},
-  {text:"You missed your connection because your travel partner insisted on stopping to eat. They don't seem to think it's their fault.",roles:["Person A","Person B"]},
-  {text:"You're at border control. The officer is asking confusing questions. Your travel companion keeps giving different answers.",roles:["The traveller","The officer"]},
-  {text:"Your friend promised to cover your accommodation costs for the trip. Now they're saying they didn't actually say that.",roles:["Person A","Person B"]},
-  {text:"You've been away together two weeks and you've realised you find this person genuinely irritating. Four days left.",roles:["Person A","Person B"]},
+  {text:"You're at the airport. Your partner wants to call off the trip. Maybe more than the trip. Ninety minutes before the gate closes.",roles:["Person A","Person B"]},
+  {text:"Your travel companion made a decision about the trip without telling you. It affected you directly. They don't seem to think it required a conversation.",roles:["Person A","Person B"]},
+  {text:"You've been travelling with this person for four days. Something was said this morning that neither of you has mentioned since. It's late.",roles:["The traveller","The stranger"]},
+  {text:"Your closest friend told other people something you shared in confidence. You found out from someone else.",roles:["Person A","Person B"]},
+  {text:"You've missed something important because of a decision the other person made. They know. They haven't acknowledged it.",roles:["Person A","Person B"]},
+  {text:"You're travelling together. You were separated briefly at the border. When you're back together, their account of the conversation doesn't match yours.",roles:["The traveller","The officer"]},
+  {text:"Your friend said they'd cover the accommodation. You planned around it. Now they're saying they didn't say that.",roles:["Person A","Person B"]},
+  {text:"Two weeks in. The things that bothered you on day three haven't gone away. Four days left.",roles:["Person A","Person B"]},
   {text:"You're meeting an ex for the first time since you broke up. You told everyone this was fine. It isn't fine.",roles:["Person A","Person B"]}
 ];
 
 const OBJ_A = [
   "You are hiding something. You don't plan to say what it is.",
   "You already know how this ends. You're stalling.",
-  "You are angrier than you're showing.",
+  "More is underneath than you're letting out.",
   "You are about to change your mind. Not yet.",
-  "You care more about this than you want to.",
+  "You have more at stake here than you've admitted.",
   "You want to leave. You keep finding reasons to stay.",
   "There is something you almost say. Three times.",
   "You are not being entirely honest."
@@ -523,36 +538,36 @@ const OBJ_A = [
 const OBJ_B = [
   "They keep missing something. You need them to understand it.",
   "You are waiting. You don't think it's coming.",
-  "You want to forgive them. You're not ready.",
-  "You are calmer than you feel.",
+  "You know what it would take. You're not there yet.",
+  "Your surface and your interior are not the same right now.",
   "You are deciding something. You haven't decided yet.",
   "You are giving them one more chance. You haven't said so.",
-  "Something they said hurt. You didn't show it.",
+  "Something landed. You didn't react.",
   "You said something wrong. You haven't admitted it."
 ];
 
 const PC_A = [
-  "You just got a message. It changes your position. Don't show it.",
+  "Something changed. Don't show it.",
   "You realise you were wrong about something. Don't admit it yet.",
-  "You suddenly feel like walking away. Don't — but feel it.",
-  "Something the other person said just hurt you. Hide it.",
+  "You want to leave. Stay.",
+  "Something just landed. Don't show it.",
   "You have five minutes. After that, you're leaving no matter what."
 ];
 const PC_B = [
   "You realise the other person is lying. Don't accuse them directly.",
   "You just decided something. You're not going to say it out loud.",
   "You want to apologise. Something is stopping you.",
-  "You've just understood something about this person you didn't before.",
-  "You feel responsible for this situation. That feeling just got stronger."
+  "You just saw something clearly. Hold it.",
+  "This is partly yours. That just got harder to ignore."
 ];
 
 // Audience interventions — scene-altering, not commentary
 const INTERVENTIONS = [
   "The person with less power speaks now.",
-  "Say the one thing that would end this conversation permanently.",
+  "Say what you've been most careful not to say.",
   "You already know how this ends. Speak from there.",
   "Something you said earlier wasn't true. Correct it.",
-  "Ask the question neither of you has been willing to ask."
+  "Ask the question you came here to avoid."
 ];
 
 const ENDINGS = {
@@ -837,7 +852,7 @@ function closeVoting(){
 }
 function updateVS(open){
   const b=document.getElementById('vstatus');
-  b.textContent=open?'🟢 Voting Open!':'⛔ Voting Closed';
+  b.textContent=open?'Voting Open':'Voting Closed';
   b.className='vstatus '+(open?'open':'closed');
 }
 
