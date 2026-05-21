@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TALK BACK 💬</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, set, get, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
   const firebaseConfig = {
     apiKey: "AIzaSyA4xeVcHisW_-FB3zHeLxzZtFt9ChpQjEY",
     authDomain: "grammarblitz-12d4d.firebaseapp.com",
@@ -20,165 +20,199 @@
   };
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  window._db = db; window._ref = ref; window._set = set; window._get = get;
-  window._onValue = onValue; window._update = update; window._remove = remove;
-  window._firebaseReady = true;
+  window._db=db; window._ref=ref; window._set=set; window._get=get;
+  window._onValue=onValue; window._push=push;
+  window._firebaseReady=true;
   document.dispatchEvent(new Event('firebaseReady'));
 </script>
 
 <style>
-  :root {
-    --pink: #ff6eb4; --mint: #5ee8c0; --yellow: #ffe045;
-    --lavender: #c9b8ff; --coral: #ff7b5c; --ink: #1a1a1a;
-    --white: #ffffff; --offwhite: #fffdf5;
-    --border: 3px solid #1a1a1a; --shadow: 5px 5px 0 #1a1a1a;
-    --shadow-sm: 3px 3px 0 #1a1a1a; --radius: 16px;
-    --ff: 'Fredoka One', cursive; --mono: 'Space Mono', monospace;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--offwhite); color: var(--ink); font-family: var(--mono); min-height: 100vh; overflow-x: hidden; }
-  .screen { display: none; min-height: 100vh; }
-  .screen.active { display: flex; flex-direction: column; }
-  .hidden { display: none !important; }
+:root {
+  --pink:#ff6eb4; --mint:#5ee8c0; --yellow:#ffe045;
+  --lav:#c9b8ff; --coral:#ff7b5c; --ink:#1a1a1a;
+  --white:#fff; --off:#fffdf5;
+  --b:3px solid #1a1a1a; --sh:5px 5px 0 #1a1a1a; --shsm:3px 3px 0 #1a1a1a; --r:16px;
+  --ff:'Fredoka One',cursive; --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--off);color:var(--ink);font-family:var(--mono);min-height:100vh;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+.hidden{display:none!important;}
 
-  /* ── LANDING ── */
-  #screen-landing { background: var(--yellow); align-items: center; justify-content: center; padding: 2rem; position: relative; overflow: hidden; }
-  .deco { position: absolute; font-size: 3rem; opacity: 0.2; pointer-events: none; }
-  .d1{top:5%;left:5%;transform:rotate(-15deg)} .d2{top:10%;right:8%;transform:rotate(20deg)}
-  .d3{bottom:12%;left:10%;transform:rotate(10deg)} .d4{bottom:8%;right:6%;transform:rotate(-20deg)}
-  .d5{top:50%;left:2%} .d6{top:40%;right:2%;transform:rotate(-10deg)}
-  .landing-card { background: var(--white); border: var(--border); box-shadow: 8px 8px 0 var(--ink); border-radius: var(--radius); padding: 3rem 1.5rem; max-width: 480px; width: 100%; position: relative; z-index: 1; text-align: center; overflow: hidden; }
-  .landing-title { font-family: var(--ff); font-size: clamp(2.2rem,8vw,5.5rem); line-height: 1; }
-  .landing-title .pop { color: var(--pink); }
-  .landing-sub { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #666; margin: 0.8rem 0 2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .role-btns { display: flex; flex-direction: column; gap: 0.8rem; }
-  .role-btn { font-family: var(--ff); font-size: 1.4rem; padding: 0.9rem 1.5rem; border: var(--border); border-radius: var(--radius); cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, box-shadow 0.1s; letter-spacing: 1px; }
-  .role-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
-  .role-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 var(--ink); }
-  .role-btn.teacher { background: var(--pink); color: white; }
-  .role-btn.student { background: var(--mint); color: var(--ink); }
+/* shared */
+.ff{font-family:var(--ff);}
+.label{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:#888;}
+.err{font-size:.7rem;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;}
+.card{background:var(--white);border:var(--b);box-shadow:var(--sh);border-radius:var(--r);}
+.cinput{font-family:var(--ff);font-size:1.5rem;letter-spacing:2px;text-align:center;border:var(--b);border-radius:var(--r);padding:.7rem 1rem;background:var(--off);width:100%;outline:none;box-shadow:var(--shsm);transition:box-shadow .1s;}
+.cinput:focus{box-shadow:5px 5px 0 var(--pink);border-color:var(--pink);}
+.cbtn{font-family:var(--ff);font-size:1.2rem;padding:.7rem 1.2rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
+.cbtn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.cbtn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);}
+.cbtn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;box-shadow:var(--sh)!important;}
+.cbtn.pink{background:var(--pink);color:#fff;} .cbtn.yellow{background:var(--yellow);color:var(--ink);}
+.cbtn.lav{background:var(--lav);color:var(--ink);} .cbtn.coral{background:var(--coral);color:#fff;}
+.cbtn.mint{background:var(--mint);color:var(--ink);} .cbtn.white{background:var(--white);color:var(--ink);}
+.cbtn.sm{font-size:1rem;padding:.5rem 1rem;}
 
-  /* ── SETUP ── */
-  #screen-setup { background: var(--mint); align-items: center; justify-content: center; padding: 2rem; }
-  .setup-card { background: var(--white); border: var(--border); box-shadow: 8px 8px 0 var(--ink); border-radius: var(--radius); padding: 2.5rem; max-width: 380px; width: 100%; display: flex; flex-direction: column; gap: 1.2rem; align-items: center; text-align: center; }
-  .setup-title { font-family: var(--ff); font-size: 2.5rem; }
+/* ── LANDING ── */
+#screen-landing{background:var(--yellow);align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden;}
+.deco{position:absolute;font-size:3rem;opacity:.2;pointer-events:none;}
+.d1{top:5%;left:5%;transform:rotate(-15deg)} .d2{top:10%;right:8%;transform:rotate(20deg)}
+.d3{bottom:12%;left:10%;transform:rotate(10deg)} .d4{bottom:8%;right:6%;transform:rotate(-20deg)}
+.d5{top:50%;left:2%} .d6{top:40%;right:2%;transform:rotate(-10deg)}
+.ltitle{font-family:var(--ff);font-size:clamp(2.2rem,8vw,5.5rem);line-height:1;}
+.ltitle .pop{color:var(--pink);}
+.lsub{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:#666;margin:.8rem 0 2rem;white-space:nowrap;}
+.rbtn{font-family:var(--ff);font-size:1.4rem;padding:.9rem 1.5rem;border:var(--b);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;letter-spacing:1px;}
+.rbtn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.rbtn.t{background:var(--pink);color:#fff;} .rbtn.s{background:var(--mint);color:var(--ink);}
 
-  /* ── SHARED COMPONENTS ── */
-  .cute-input { font-family: var(--ff); font-size: 2rem; letter-spacing: 6px; text-align: center; border: var(--border); border-radius: var(--radius); padding: 0.8rem 1rem; background: var(--offwhite); width: 100%; text-transform: uppercase; outline: none; box-shadow: var(--shadow-sm); transition: box-shadow 0.1s; }
-  .cute-input:focus { box-shadow: 5px 5px 0 var(--pink); border-color: var(--pink); }
-  .cute-btn { font-family: var(--ff); font-size: 1.4rem; padding: 0.8rem 1.5rem; border: var(--border); border-radius: var(--radius); cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, box-shadow 0.1s; width: 100%; letter-spacing: 1px; }
-  .cute-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
-  .cute-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 var(--ink); }
-  .cute-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: var(--shadow) !important; }
-  .cute-btn.pink { background: var(--pink); color: white; }
-  .cute-btn.yellow { background: var(--yellow); color: var(--ink); }
-  .cute-btn.lavender { background: var(--lavender); color: var(--ink); }
-  .cute-btn.coral { background: var(--coral); color: white; }
-  .cute-btn.mint { background: var(--mint); color: var(--ink); }
-  .cute-btn.white { background: var(--white); color: var(--ink); }
-  .error-msg { font-size: 0.7rem; color: var(--coral); text-transform: uppercase; letter-spacing: 0.1em; }
-  .label-sm { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: #888; }
+/* ── TEACHER ── */
+.t-header{background:var(--pink);border-bottom:var(--b);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.t-logo{font-family:var(--ff);font-size:2rem;color:#fff;letter-spacing:2px;}
+.t-logo .pop{color:var(--yellow);}
+.rmbadge{background:var(--white);border:var(--b);border-radius:12px;padding:.4rem 1rem;box-shadow:var(--shsm);text-align:center;}
+.rmbadge-code{font-family:var(--ff);font-size:1.6rem;color:var(--pink);letter-spacing:4px;line-height:1.2;}
+.t-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem;}
+@media(max-width:700px){.t-body{grid-template-columns:1fr;}}
 
-  /* ── TEACHER ── */
-  #screen-teacher { background: var(--offwhite); }
-  .teacher-header { background: var(--pink); border-bottom: var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
-  .t-logo { font-family: var(--ff); font-size: 2rem; color: white; letter-spacing: 2px; }
-  .t-logo .pop { color: var(--yellow); }
-  .room-badge { background: var(--white); border: var(--border); border-radius: 12px; padding: 0.4rem 1rem; box-shadow: var(--shadow-sm); text-align: center; }
-  .room-badge-code { font-family: var(--ff); font-size: 1.6rem; color: var(--pink); letter-spacing: 4px; line-height: 1.2; }
-  .teacher-body { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; }
-  @media(max-width:700px){ .teacher-body { grid-template-columns: 1fr; } }
+/* director panel */
+.director{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;}
+.director-title{font-family:var(--ff);font-size:1.4rem;display:flex;align-items:center;gap:.5rem;}
+.dir-section{display:flex;flex-direction:column;gap:.4rem;}
+.dir-divider{border:none;border-top:2px dashed #ddd;margin:.2rem 0;}
 
-  .scenario-card { background: var(--yellow); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; position: relative; overflow: hidden; }
-  .scenario-card::after { content: '💬'; font-size: 5rem; position: absolute; right: -0.5rem; bottom: -0.5rem; opacity: 0.18; pointer-events: none; }
-  .scenario-text { font-family: var(--ff); font-size: clamp(1rem,1.8vw,1.4rem); line-height: 1.35; margin: 0.4rem 0 1rem; }
-  .scenario-roles { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .scenario-role { background: var(--white); border: 2px solid var(--ink); border-radius: 20px; padding: 0.25rem 0.75rem; font-size: 0.65rem; box-shadow: 2px 2px 0 var(--ink); }
+/* roster */
+.roster-list{display:flex;flex-direction:column;gap:.35rem;max-height:160px;overflow-y:auto;}
+.ri{display:flex;align-items:center;justify-content:space-between;padding:.35rem .7rem;border:2px solid var(--ink);border-radius:10px;box-shadow:2px 2px 0 var(--ink);}
+.ri.on{background:var(--yellow);}  .ri.off{background:var(--off);}
+.ri-name{font-family:var(--ff);font-size:1rem;}
+.ri-role{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#666;max-width:55%;text-align:right;}
+.ri-role.hot{color:var(--coral);font-weight:700;}
+.roster-empty{font-size:.65rem;color:#bbb;text-align:center;padding:.8rem;text-transform:uppercase;letter-spacing:.1em;}
 
-  /* complication card */
-  .complication-display { display: none; background: var(--coral); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.2rem; animation: slide-in 0.3s ease; }
-  .complication-display.show { display: block; }
-  @keyframes slide-in { from{transform:translateY(-10px);opacity:0} to{transform:translateY(0);opacity:1} }
-  .complication-text { font-family: var(--ff); font-size: 1.1rem; color: white; line-height: 1.3; }
+/* scenario */
+.sc-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;position:relative;overflow:hidden;}
+.sc-card::after{content:'💬';font-size:4rem;position:absolute;right:-.5rem;bottom:-.5rem;opacity:.15;pointer-events:none;}
+.sc-text{font-family:var(--ff);font-size:clamp(.95rem,1.7vw,1.3rem);line-height:1.35;margin:.35rem 0 .8rem;}
+.sc-roles{display:flex;flex-wrap:wrap;gap:.4rem;}
+.sc-role{background:var(--white);border:2px solid var(--ink);border-radius:20px;padding:.2rem .6rem;font-size:.62rem;box-shadow:2px 2px 0 var(--ink);}
 
-  .scaffold-toggle { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; background: var(--lavender); border: var(--border); border-radius: 20px; padding: 0.4rem 1rem; cursor: pointer; box-shadow: var(--shadow-sm); align-self: flex-start; transition: transform 0.1s; }
-  .scaffold-toggle:hover { transform: translate(-1px,-1px); }
-  .scaffold-panel { display: none; background: var(--white); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem; }
-  .scaffold-panel.open { display: block; }
-  .scaffold-cat { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--pink); margin: 0.7rem 0 0.3rem; font-weight: 700; }
-  .scaffold-cat:first-child { margin-top: 0; }
-  .scaffold-phrases { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem; }
-  .scaffold-phrases li { background: var(--offwhite); border: 2px solid var(--ink); border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.65rem; box-shadow: 2px 2px 0 var(--ink); }
+/* complication broadcast */
+.comp-display{display:none;border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem;animation:slidein .3s ease;}
+.comp-display.show{display:block;}
+@keyframes slidein{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.comp-text{font-family:var(--ff);font-size:1.05rem;line-height:1.3;color:#fff;}
 
-  /* timer */
-  .timer-block { background: var(--lavender); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.2rem; text-align: center; }
-  .timer-display { font-family: var(--ff); font-size: clamp(4rem,10vw,7rem); line-height: 1; transition: color 0.3s; }
-  .timer-display.warn { color: var(--coral); }
-  .timer-controls { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.8rem; }
-  .t-btn { font-family: var(--ff); font-size: 1rem; padding: 0.5rem 1rem; border: var(--border); border-radius: 12px; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform 0.1s, box-shadow 0.1s; background: var(--white); }
-  .t-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
-  .t-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
-  .t-btn.go { background: var(--mint); }
+/* timer */
+.timer-block{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;text-align:center;}
+.timer-disp{font-family:var(--ff);font-size:clamp(4rem,10vw,6.5rem);line-height:1;transition:color .3s;}
+.timer-disp.warn{color:var(--coral);}
+.tctrls{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:.7rem;}
+.tbtn{font-family:var(--ff);font-size:.95rem;padding:.45rem .9rem;border:var(--b);border-radius:10px;cursor:pointer;box-shadow:var(--shsm);transition:transform .1s,box-shadow .1s;background:var(--white);}
+.tbtn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink);}
+.tbtn.go{background:var(--mint);}
 
-  /* results */
-  .results-panel { background: var(--white); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; }
-  .results-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; }
-  .results-title { font-family: var(--ff); font-size: 1.5rem; }
-  .vote-status { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; padding: 0.3rem 0.8rem; border: var(--border); border-radius: 20px; display: inline-block; align-self: flex-start; box-shadow: 2px 2px 0 var(--ink); }
-  .vote-status.closed { background: #eee; color: #888; }
-  .vote-status.open { background: var(--mint); animation: blink 1.2s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.55} }
-  .criterion { background: var(--offwhite); border: 2px solid var(--ink); border-radius: 12px; padding: 0.7rem; margin-bottom: 0.5rem; }
-  .criterion-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: #555; margin-bottom: 0.5rem; }
-  .stars-bar { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
-  .star-pill { height: 26px; min-width: 32px; padding: 0 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; border-radius: 20px; border: 2px solid var(--ink); transition: all 0.2s; }
-  .star-pill.s1{background:#f3f3f3} .star-pill.s2{background:var(--lavender)} .star-pill.s3{background:#b8f0e0} .star-pill.s4{background:var(--mint)} .star-pill.s5{background:var(--pink);color:white}
-  .star-count { font-size: 0.6rem; color: #888; min-width: 1.5rem; }
-  .avg-score { font-family: var(--ff); font-size: 1.8rem; color: var(--pink); margin-left: auto; }
+/* results */
+.res-panel{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.2rem;display:flex;flex-direction:column;gap:.7rem;}
+.vstatus{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;padding:.3rem .8rem;border:var(--b);border-radius:20px;display:inline-block;align-self:flex-start;box-shadow:2px 2px 0 var(--ink);}
+.vstatus.closed{background:#eee;color:#888;} .vstatus.open{background:var(--mint);animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+.crit{background:var(--off);border:2px solid var(--ink);border-radius:10px;padding:.6rem;margin-bottom:.4rem;}
+.crit-name{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#555;margin-bottom:.4rem;}
+.sbar{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;}
+.spill{height:24px;min-width:30px;padding:0 .45rem;display:flex;align-items:center;justify-content:center;font-size:.65rem;border-radius:20px;border:2px solid var(--ink);transition:all .2s;}
+.spill.s1{background:#f3f3f3} .spill.s2{background:var(--lav)} .spill.s3{background:#b8f0e0} .spill.s4{background:var(--mint)} .spill.s5{background:var(--pink);color:#fff}
+.scnt{font-size:.58rem;color:#888;min-width:1.4rem;}
+.avg{font-family:var(--ff);font-size:1.7rem;color:var(--pink);margin-left:auto;}
 
-  /* ── STUDENT ── */
-  #screen-student { background: var(--offwhite); }
-  .student-header { background: var(--mint); border-bottom: var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-  .s-logo { font-family: var(--ff); font-size: 1.8rem; }
-  .s-logo .pop { color: var(--pink); }
-  .s-room { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #555; text-align: right; }
-  .s-room strong { font-family: var(--ff); font-size: 1.4rem; color: var(--ink); display: block; line-height: 1.1; }
-  .student-body { flex: 1; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; max-width: 460px; margin: 0 auto; width: 100%; }
+/* scaffold */
+.scaf-tog{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;background:var(--lav);border:var(--b);border-radius:20px;padding:.35rem .9rem;cursor:pointer;box-shadow:var(--shsm);align-self:flex-start;transition:transform .1s;}
+.scaf-tog:hover{transform:translate(-1px,-1px);}
+.scaf-panel{display:none;background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.9rem;}
+.scaf-panel.open{display:block;}
+.scaf-cat{font-size:.58rem;text-transform:uppercase;letter-spacing:.13em;color:var(--pink);margin:.6rem 0 .25rem;font-weight:700;}
+.scaf-cat:first-child{margin-top:0;}
+.scaf-list{list-style:none;display:flex;flex-wrap:wrap;gap:.25rem;}
+.scaf-list li{background:var(--off);border:2px solid var(--ink);border-radius:20px;padding:.18rem .55rem;font-size:.62rem;box-shadow:2px 2px 0 var(--ink);}
 
-  .join-form { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 1.2rem; text-align: center; }
-  .join-title { font-family: var(--ff); font-size: 2.8rem; line-height: 1; }
-  .join-title .pop { color: var(--pink); }
+/* ── STUDENT ── */
+.s-header{background:var(--mint);border-bottom:var(--b);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.s-logo{font-family:var(--ff);font-size:1.8rem;}
+.s-logo .pop{color:var(--pink);}
+.s-room{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#555;text-align:right;}
+.s-room strong{font-family:var(--ff);font-size:1.4rem;color:var(--ink);display:block;line-height:1.1;}
+.sbody{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;max-width:460px;margin:0 auto;width:100%;}
 
-  .waiting-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 1rem; text-align: center; padding: 2rem; }
-  .waiting-blob { width: 100px; height: 100px; background: var(--yellow); border: var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: var(--shadow); animation: float 2.5s ease-in-out infinite; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-  .waiting-msg { font-family: var(--ff); font-size: 1.8rem; }
-  .waiting-sub { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; }
+/* join */
+.jform{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1.1rem;text-align:center;}
+.jtitle{font-family:var(--ff);font-size:2.8rem;line-height:1;}
+.jtitle .pop{color:var(--pink);}
 
-  /* complication alert on student */
-  .complication-alert { display: none; background: var(--coral); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.2rem; text-align: center; animation: pop-in 0.35s cubic-bezier(0.36,0.07,0.19,0.97); }
-  .complication-alert.show { display: block; }
-  @keyframes pop-in { 0%{transform:scale(0.7);opacity:0} 70%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
-  .ca-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; }
-  .ca-text { font-family: var(--ff); font-size: 1.2rem; color: white; line-height: 1.3; }
+/* waiting */
+.wstate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;padding:2rem;}
+.wblob{width:90px;height:90px;background:var(--yellow);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:var(--sh);animation:float 2.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.wmsg{font-family:var(--ff);font-size:1.8rem;}
+.wsub{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa;}
 
-  .vote-form { display: flex; flex-direction: column; gap: 1rem; }
-  .vote-title { font-family: var(--ff); font-size: 2rem; line-height: 1.1; }
-  .vote-title .pop { color: var(--pink); }
-  .vote-criterion { background: var(--white); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem; }
-  .vc-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: #888; margin-bottom: 0.7rem; }
-  .star-row { display: flex; gap: 0.5rem; justify-content: center; }
-  .star-btn { width: 46px; height: 46px; font-size: 1.8rem; background: var(--offwhite); border: var(--border); border-radius: 12px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s, background 0.1s; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); color: #ccc; }
-  .star-btn:hover { transform: scale(1.15) rotate(-5deg); }
-  .star-btn.lit { color: #f5a623; background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
-  .submit-vote-btn { font-family: var(--ff); font-size: 1.6rem; padding: 1rem; border: var(--border); border-radius: var(--radius); background: var(--pink); color: white; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, box-shadow 0.1s; width: 100%; letter-spacing: 1px; }
-  .submit-vote-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
-  .submit-vote-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+/* role card */
+.role-reveal{display:flex;flex-direction:column;gap:1rem;padding:.5rem 0;}
+.role-card{background:var(--yellow);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;}
+.role-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
+.role-blob{width:48px;height:48px;background:var(--pink);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:var(--shsm);flex-shrink:0;}
+.role-name{font-family:var(--ff);font-size:1.5rem;line-height:1.1;}
+.role-scenario{font-size:.75rem;line-height:1.4;color:#333;border-top:2px dashed rgba(0,0,0,.15);padding-top:.7rem;margin-top:.3rem;}
 
-  .voted-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 1rem; text-align: center; padding: 2rem; }
-  .voted-blob { width: 110px; height: 110px; background: var(--mint); border: var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; box-shadow: var(--shadow); animation: pop-in 0.4s cubic-bezier(0.36,0.07,0.19,0.97); }
-  .voted-msg { font-family: var(--ff); font-size: 2.5rem; }
-  .voted-sub { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; }
+/* secret objective */
+.objective-card{background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem 1.2rem;}
+.obj-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:var(--pink);margin-bottom:.3rem;}
+.obj-text{font-family:var(--ff);font-size:1.2rem;color:var(--yellow);line-height:1.3;}
+.obj-sub{font-size:.6rem;color:#888;margin-top:.3rem;letter-spacing:.05em;}
+
+/* private complication */
+.priv-comp{display:none;background:var(--coral);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:.9rem 1.1rem;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+.priv-comp.show{display:block;}
+@keyframes popin{0%{transform:scale(.75);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.pc-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.7);margin-bottom:.25rem;}
+.pc-text{font-family:var(--ff);font-size:1.1rem;color:#fff;line-height:1.3;}
+
+/* audience card */
+.aud-card{background:var(--lav);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;text-align:center;}
+.aud-title{font-family:var(--ff);font-size:1.8rem;margin-bottom:.3rem;}
+.aud-sub{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#555;}
+
+/* intervention */
+.intervention-btn{font-family:var(--ff);font-size:1.4rem;padding:.9rem;border:var(--b);border-radius:var(--r);background:var(--coral);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;animation:pulse-border 1.5s infinite;}
+.intervention-btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.intervention-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;animation:none;}
+@keyframes pulse-border{0%,100%{box-shadow:var(--sh)}50%{box-shadow:5px 5px 0 var(--coral)}}
+
+/* intervention broadcast */
+.intv-alert{display:none;background:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:1rem;text-align:center;animation:popin .35s cubic-bezier(.36,.07,.19,.97);}
+.intv-alert.show{display:block;}
+.intv-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.15em;color:var(--coral);margin-bottom:.25rem;}
+.intv-text{font-family:var(--ff);font-size:1.3rem;color:var(--yellow);line-height:1.3;}
+
+/* vote */
+.vform{display:flex;flex-direction:column;gap:.9rem;}
+.vtitle{font-family:var(--ff);font-size:2rem;line-height:1.1;}
+.vtitle .pop{color:var(--pink);}
+.vcrit{background:var(--white);border:var(--b);border-radius:var(--r);box-shadow:var(--shsm);padding:.9rem;}
+.vc-name{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:.6rem;}
+.srow{display:flex;gap:.45rem;justify-content:center;}
+.sbtn{width:44px;height:44px;font-size:1.7rem;background:var(--off);border:var(--b);border-radius:10px;cursor:pointer;transition:transform .1s,background .1s;display:flex;align-items:center;justify-content:center;box-shadow:var(--shsm);color:#ccc;}
+.sbtn:hover{transform:scale(1.15) rotate(-5deg);}
+.sbtn.lit{color:#f5a623;background:var(--yellow);box-shadow:3px 3px 0 var(--ink);}
+.subvote{font-family:var(--ff);font-size:1.5rem;padding:.9rem;border:var(--b);border-radius:var(--r);background:var(--pink);color:#fff;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .1s;width:100%;letter-spacing:1px;}
+.subvote:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+.subvote:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* voted */
+.voted-st{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;padding:2rem;}
+.voted-blob{width:100px;height:100px;background:var(--mint);border:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;box-shadow:var(--sh);animation:popin .4s cubic-bezier(.36,.07,.19,.97);}
 </style>
 </head>
 <body>
@@ -188,111 +222,125 @@
   <span class="deco d1">✈️</span><span class="deco d2">💌</span>
   <span class="deco d3">🗺️</span><span class="deco d4">🌸</span>
   <span class="deco d5">🤝</span><span class="deco d6">💬</span>
-  <div class="landing-card">
-    <div style="font-size:3rem;margin-bottom:0.5rem">🎭</div>
-    <div class="landing-title">TALK<span class="pop">BACK</span></div>
-    <div class="landing-sub">relationships · communication · travel</div>
-    <div class="role-btns">
-      <button class="role-btn teacher" onclick="showScreen('screen-setup')">👩‍🏫 I'm the Teacher</button>
-      <button class="role-btn student" onclick="showScreen('screen-student')">🙋 I'm a Student</button>
+  <div class="card" style="max-width:480px;width:100%;padding:2.5rem 1.5rem;text-align:center;overflow:hidden;position:relative;z-index:1;">
+    <div style="font-size:3rem;margin-bottom:.5rem">🎭</div>
+    <div class="ltitle">TALK<span class="pop">BACK</span></div>
+    <div class="lsub">relationships · communication · travel</div>
+    <div style="display:flex;flex-direction:column;gap:.8rem;">
+      <button class="rbtn t" onclick="showScreen('screen-setup')">👩‍🏫 I'm the Teacher</button>
+      <button class="rbtn s" onclick="showScreen('screen-student')">🙋 I'm a Student</button>
     </div>
   </div>
 </div>
 
 <!-- SETUP -->
 <div id="screen-setup" class="screen" style="align-items:center;justify-content:center;background:var(--mint);padding:2rem;">
-  <div class="setup-card">
+  <div class="card" style="max-width:380px;width:100%;padding:2.2rem;display:flex;flex-direction:column;gap:1.1rem;align-items:center;text-align:center;">
     <div style="font-size:2.5rem">🏫</div>
-    <div class="setup-title">Set Up Room</div>
-    <div class="label-sm">Choose a 4-letter room code</div>
-    <input class="cute-input" id="setup-code-input" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
-    <div class="error-msg hidden" id="setup-error"></div>
-    <button class="cute-btn pink" onclick="setupRoom()">Create Room ✨</button>
-    <button class="cute-btn yellow" style="font-size:1rem;" onclick="showScreen('screen-landing')">← Back</button>
+    <div class="ff" style="font-size:2.3rem;">Set Up Room</div>
+    <div class="label">Choose a 4-letter room code</div>
+    <input class="cinput" id="setup-code" maxlength="4" placeholder="e.g. DSP9" oninput="this.value=this.value.toUpperCase()">
+    <div class="err hidden" id="setup-err"></div>
+    <button class="cbtn pink" onclick="setupRoom()">Create Room ✨</button>
+    <button class="cbtn yellow sm" onclick="showScreen('screen-landing')">← Back</button>
   </div>
 </div>
 
 <!-- TEACHER VIEW -->
 <div id="screen-teacher" class="screen">
-  <div class="teacher-header">
+  <div class="t-header">
     <div class="t-logo">TALK<span class="pop">BACK</span> 🎭</div>
-    <div class="room-badge">
-      <div class="label-sm">Room Code</div>
-      <div class="room-badge-code" id="teacher-room-display">----</div>
+    <div class="rmbadge">
+      <div class="label">Room Code</div>
+      <div class="rmbadge-code" id="t-room-code">----</div>
     </div>
   </div>
 
-  <div class="teacher-body">
-    <!-- LEFT col -->
-    <div style="display:flex;flex-direction:column;gap:1rem;">
+  <div class="t-body">
 
-      <div class="scenario-card">
-        <div class="label-sm">📋 Current Scenario</div>
-        <div class="scenario-text" id="scenario-text">Press NEW SCENARIO to begin ✨</div>
-        <div class="scenario-roles" id="scenario-roles"></div>
+    <!-- LEFT: Director Panel -->
+    <div class="director">
+      <div class="director-title">🎬 Director</div>
+
+      <!-- 1. Roster -->
+      <div class="dir-section">
+        <div class="label">Students <span id="roster-count"></span></div>
+        <div class="roster-list" id="roster-list">
+          <div class="roster-empty">Waiting for students…</div>
+        </div>
       </div>
 
-      <!-- COMPLICATION DISPLAY -->
-      <div class="complication-display" id="complication-display">
-        <div class="label-sm" style="color:rgba(255,255,255,0.7);margin-bottom:0.3rem">⚡ Complication Card</div>
-        <div class="complication-text" id="complication-text"></div>
+      <hr class="dir-divider">
+
+      <!-- 2. Scene -->
+      <div class="dir-section">
+        <div class="label">Scene</div>
+        <div class="sc-card">
+          <div class="label" style="margin-bottom:.3rem">📋 Scenario</div>
+          <div class="sc-text" id="sc-text">Press START SCENE to begin</div>
+          <div class="sc-roles" id="sc-roles"></div>
+        </div>
+        <button class="cbtn yellow" onclick="newRound()">⟳ Start New Scene</button>
       </div>
 
-      <button class="cute-btn coral" onclick="fireComplication()" id="btn-complication" disabled>⚡ Fire Complication Card</button>
+      <hr class="dir-divider">
 
-      <button class="scaffold-toggle" onclick="toggleScaffold()">🗣️ Language Scaffold</button>
-      <div class="scaffold-panel" id="scaffold-panel">
-        <div class="scaffold-cat">💭 Expressing feelings</div>
-        <ul class="scaffold-phrases">
-          <li>To be honest…</li><li>I feel like…</li><li>What bothers me is…</li><li>It's not that I don't…</li>
-        </ul>
-        <div class="scaffold-cat">🤔 Disagreeing politely</div>
-        <ul class="scaffold-phrases">
-          <li>I see your point, but…</li><li>That's fair, although…</li><li>I'd actually argue…</li><li>Not necessarily…</li>
-        </ul>
-        <div class="scaffold-cat">❓ Asking for clarification</div>
-        <ul class="scaffold-phrases">
-          <li>What exactly do you mean?</li><li>Could you say more about…?</li><li>So you're saying…?</li><li>Sorry, just to check…</li>
-        </ul>
-        <div class="scaffold-cat">💡 Making suggestions</div>
-        <ul class="scaffold-phrases">
-          <li>What if we…?</li><li>How about…?</li><li>Why don't we just…</li><li>One option would be…</li>
-        </ul>
-        <div class="scaffold-cat">⏳ Buying time</div>
-        <ul class="scaffold-phrases">
-          <li>That's a good point…</li><li>Let me think about that…</li><li>Well, the thing is…</li><li>OK so…</li>
-        </ul>
+      <!-- 3. During scene -->
+      <div class="dir-section">
+        <div class="label">During the Scene</div>
+        <button class="cbtn coral sm" id="btn-comp" onclick="firePrivateComplications()" disabled>⚡ Fire Private Complications</button>
+        <div class="comp-display" id="comp-display" style="background:var(--coral);">
+          <div class="label" style="color:rgba(255,255,255,.7);margin-bottom:.25rem">Broadcast to all</div>
+          <div class="comp-text" id="comp-broadcast-text"></div>
+        </div>
+        <button class="cbtn white sm" id="btn-intv" onclick="fireIntervention()" disabled>🙋 Unlock Audience Intervention</button>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:0.6rem;">
-        <div class="label-sm">Round Controls</div>
-        <button class="cute-btn yellow" onclick="newRound()">⟳ New Scenario</button>
-        <button class="cute-btn mint" id="btn-open-vote" onclick="openVoting()">▶ Open Voting</button>
-        <button class="cute-btn lavender" id="btn-close-vote" onclick="closeVoting()" disabled>■ Close Voting</button>
+      <hr class="dir-divider">
+
+      <!-- 4. Voting -->
+      <div class="dir-section">
+        <div class="label">Voting</div>
+        <button class="cbtn mint sm" id="btn-vote-open" onclick="openVoting()" disabled>▶ Open Voting</button>
+        <button class="cbtn lav sm" id="btn-vote-close" onclick="closeVoting()" disabled>■ Close Voting</button>
       </div>
 
+      <!-- Scaffold -->
+      <button class="scaf-tog" onclick="toggleScaffold()">🗣️ Language Scaffold</button>
+      <div class="scaf-panel" id="scaf-panel">
+        <div class="scaf-cat">💭 Expressing feelings</div>
+        <ul class="scaf-list"><li>To be honest…</li><li>I feel like…</li><li>What bothers me is…</li><li>It's not that I don't…</li></ul>
+        <div class="scaf-cat">🤔 Disagreeing politely</div>
+        <ul class="scaf-list"><li>I see your point, but…</li><li>That's fair, although…</li><li>I'd actually argue…</li><li>Not necessarily…</li></ul>
+        <div class="scaf-cat">❓ Clarifying</div>
+        <ul class="scaf-list"><li>What exactly do you mean?</li><li>Could you say more?</li><li>So you're saying…?</li><li>Just to check…</li></ul>
+        <div class="scaf-cat">💡 Suggesting</div>
+        <ul class="scaf-list"><li>What if we…?</li><li>How about…?</li><li>One option would be…</li></ul>
+        <div class="scaf-cat">⏳ Buying time</div>
+        <ul class="scaf-list"><li>That's a good point…</li><li>Let me think…</li><li>Well, the thing is…</li></ul>
+      </div>
     </div>
 
-    <!-- RIGHT col -->
+    <!-- RIGHT: Timer + Results -->
     <div style="display:flex;flex-direction:column;gap:1rem;">
 
       <div class="timer-block">
-        <div class="timer-display" id="timer-display">3:00</div>
-        <div class="timer-controls">
-          <button class="t-btn go" onclick="startTimer(180)">⏱ Prep 3:00</button>
-          <button class="t-btn go" onclick="startTimer(240)">🎬 Perform 4:00</button>
-          <button class="t-btn" onclick="pauseTimer()">⏸</button>
-          <button class="t-btn" onclick="resetTimer()">↺</button>
+        <div class="timer-disp" id="timer-disp">3:00</div>
+        <div class="tctrls">
+          <button class="tbtn go" onclick="startTimer(180)">⏱ Prep 3:00</button>
+          <button class="tbtn go" onclick="startTimer(240)">🎬 4:00</button>
+          <button class="tbtn" onclick="pauseTimer()">⏸</button>
+          <button class="tbtn" onclick="resetTimer()">↺</button>
         </div>
       </div>
 
-      <div class="results-panel">
-        <div class="results-header">
-          <div class="results-title">📊 Live Results</div>
-          <div class="label-sm" id="voter-count">0 votes</div>
+      <div class="res-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.3rem;">
+          <div class="ff" style="font-size:1.4rem;">📊 Live Results</div>
+          <div class="label" id="voter-count">0 votes</div>
         </div>
-        <div class="vote-status closed" id="vote-status-badge">Voting Closed</div>
-        <div id="criteria-results"></div>
+        <div class="vstatus closed" id="vstatus">Voting Closed</div>
+        <div id="results-container"></div>
       </div>
 
     </div>
@@ -301,47 +349,86 @@
 
 <!-- STUDENT VIEW -->
 <div id="screen-student" class="screen">
-  <div class="student-header">
+  <div class="s-header">
     <div class="s-logo">TALK<span class="pop">BACK</span></div>
-    <div class="s-room">Room<strong id="student-room-display">----</strong></div>
+    <div class="s-room">Room<strong id="s-room-code">----</strong></div>
   </div>
+  <div class="sbody">
 
-  <div class="student-body">
-
-    <div class="join-form" id="student-join">
+    <!-- Join -->
+    <div class="jform" id="s-join">
       <div style="font-size:3rem">🎭</div>
-      <div class="join-title">Join a <span class="pop">Room!</span></div>
-      <div class="label-sm">Enter your teacher's room code</div>
-      <input class="cute-input" id="join-code-input" maxlength="4" placeholder="ABCD" oninput="this.value=this.value.toUpperCase()" style="max-width:220px;">
-      <div class="error-msg hidden" id="join-error"></div>
-      <button class="cute-btn pink" onclick="joinRoom()" style="max-width:220px;">Join ✨</button>
+      <div class="jtitle">Join a <span class="pop">Room!</span></div>
+      <div class="label">Teacher's room code</div>
+      <input class="cinput" id="join-code" maxlength="4" placeholder="ABCD" oninput="this.value=this.value.toUpperCase()" style="max-width:220px;">
+      <div class="label" style="margin-top:.2rem;">Your name</div>
+      <input class="cinput" id="join-name" maxlength="20" placeholder="Your name" style="max-width:260px;font-size:1.3rem;letter-spacing:1px;">
+      <div class="err hidden" id="join-err"></div>
+      <button class="cbtn pink" onclick="joinRoom()" style="max-width:260px;">Join ✨</button>
     </div>
 
-    <div class="waiting-state hidden" id="student-waiting">
-      <div class="complication-alert hidden" id="student-complication">
-        <div class="ca-label">⚡ Complication Card!</div>
-        <div class="ca-text" id="student-complication-text"></div>
+    <!-- Waiting -->
+    <div class="wstate hidden" id="s-waiting">
+      <div class="wblob">⏳</div>
+      <div class="wmsg">Waiting…</div>
+      <div class="wsub">Teacher will assign roles soon</div>
+    </div>
+
+    <!-- Performing -->
+    <div class="role-reveal hidden" id="s-performing">
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-blob">🎭</div>
+          <div>
+            <div class="label">Your role</div>
+            <div class="role-name" id="s-role-name"></div>
+          </div>
+        </div>
+        <div class="role-scenario" id="s-scenario-text"></div>
       </div>
-      <div class="waiting-blob">⏳</div>
-      <div class="waiting-msg">Waiting for voting…</div>
-      <div class="waiting-sub">Your teacher will open voting soon!</div>
-    </div>
-
-    <div class="vote-form hidden" id="student-vote">
-      <div class="complication-alert hidden" id="student-complication-vote">
-        <div class="ca-label">⚡ Complication Card!</div>
-        <div class="ca-text" id="student-complication-vote-text"></div>
+      <div class="objective-card">
+        <div class="obj-label">🔒 Secret Objective — only you see this</div>
+        <div class="obj-text" id="s-objective"></div>
+        <div class="obj-sub">Don't say it. Play it.</div>
       </div>
-      <div class="vote-title">Rate the <span class="pop">Dialogue!</span> ⭐</div>
-      <div id="student-criteria-blocks"></div>
-      <div class="error-msg hidden" id="vote-error"></div>
-      <button class="submit-vote-btn" id="submit-vote-btn" onclick="submitVote()">Submit! 🚀</button>
+      <div class="priv-comp hidden" id="s-priv-comp">
+        <div class="pc-label">⚡ Private Complication</div>
+        <div class="pc-text" id="s-priv-comp-text"></div>
+      </div>
+      <div class="intv-alert hidden" id="s-intv-perf">
+        <div class="intv-label">🙋 Audience Intervening</div>
+        <div class="intv-text" id="s-intv-perf-text"></div>
+      </div>
     </div>
 
-    <div class="voted-state hidden" id="student-voted">
+    <!-- Audience -->
+    <div class="wstate hidden" id="s-audience">
+      <div class="aud-card" style="width:100%;">
+        <div class="aud-title">👀 You're the Audience</div>
+        <div class="aud-sub">Watch carefully — you'll vote after</div>
+      </div>
+      <button class="intervention-btn hidden" id="s-intv-btn" onclick="audienceIntervene()">🙋 Intervene Now</button>
+      <div class="intv-alert hidden" id="s-intv-aud">
+        <div class="intv-label">🙋 Audience Intervening</div>
+        <div class="intv-text" id="s-intv-aud-text"></div>
+      </div>
+      <div class="wblob">👁️</div>
+      <div class="wmsg" style="font-size:1.4rem;">Watch the scene</div>
+    </div>
+
+    <!-- Vote -->
+    <div class="vform hidden" id="s-vote">
+      <div class="vtitle">Rate the <span class="pop">Dialogue!</span> ⭐</div>
+      <div id="s-crit-blocks"></div>
+      <div class="err hidden" id="vote-err"></div>
+      <button class="subvote" onclick="submitVote()">Submit! 🚀</button>
+    </div>
+
+    <!-- Voted -->
+    <div class="voted-st hidden" id="s-voted">
       <div class="voted-blob">✅</div>
-      <div class="voted-msg">You voted! 🎉</div>
-      <div class="voted-sub">Waiting for the next round…</div>
+      <div class="ff" style="font-size:2.3rem;">You voted! 🎉</div>
+      <div class="wsub">Waiting for the next round…</div>
     </div>
 
   </div>
@@ -351,278 +438,375 @@
 // ── DATA ─────────────────────────────────────────────────────────
 
 const SCENARIOS = [
-  { text: "You've been messaging someone for three months but never met. You're finally at the same café. One of you is clearly less enthusiastic than their messages suggested.", roles: ["Person who suggested meeting", "Person who is… surprised"] },
-  { text: "You and a close friend had a serious argument two days ago. Neither of you has apologised. Now you're stuck together on a five-hour bus journey.", roles: ["Person A — not convinced they were wrong", "Person B — waiting for the apology"] },
-  { text: "You borrowed a significant amount of money from a close friend six months ago. You still haven't paid it back. They've just brought it up in front of other people.", roles: ["The borrower", "The friend who's been patient long enough"] },
-  { text: "You're at the airport. Your partner wants to call off the trip — and possibly more than the trip. You have 90 minutes before the gate closes.", roles: ["Person who wants to leave", "Person who wants to stay — and talk"] },
-  { text: "You discover mid-trip that your travel companion has been secretly planning to extend the trip by a week — without telling you.", roles: ["The one who planned it", "The one who just found out"] },
-  { text: "You're sharing a hostel room with a stranger. It's 1am, you have a 6am flight. They are very much awake and very much want to talk.", roles: ["The traveller who needs sleep", "The very awake stranger"] },
-  { text: "You've just found out that your closest friend told other people something you shared with them in confidence.", roles: ["The one who found out", "The friend who told people"] },
-  { text: "You missed your connection because your travel partner insisted on stopping to eat. They don't seem to think it's their fault.", roles: ["The one who missed the flight", "The one who wanted to eat"] },
-  { text: "You're at border control. The officer is asking confusing questions. Your travel companion keeps giving different answers from you — and they don't seem to notice.", roles: ["Traveller A", "Border control officer"] },
-  { text: "You and a friend are travelling together but you've realised you have completely different ideas about what this trip is supposed to be. One of you wants adventure. The other needed to rest.", roles: ["The one who wants to explore everything", "The one who just wants to stop"] },
-  { text: "Your friend promised to cover your accommodation costs for the trip. Now they're saying they didn't actually say that.", roles: ["The one who remembers the promise", "The one who says it never happened"] },
-  { text: "You've been away together for two weeks and you've just realised you find this person genuinely irritating. You still have four days left.", roles: ["Person A — done pretending everything is fine", "Person B — just noticed something is wrong"] }
+  { text: "You've been messaging someone for three months but never met. You're finally at the same café. One of you is clearly less enthusiastic than their messages suggested.", roles: ["Person who suggested meeting","Person who is… surprised"] },
+  { text: "You and a close friend had a serious argument two days ago. Neither of you has apologised. Now you're stuck together on a five-hour bus journey.", roles: ["Person A — not convinced they were wrong","Person B — waiting for the apology"] },
+  { text: "You borrowed a significant amount of money from a close friend six months ago. You still haven't paid it back. They've just brought it up in front of other people.", roles: ["The borrower","The friend who's been patient long enough"] },
+  { text: "You're at the airport. Your partner wants to call off the trip — and possibly more than the trip. You have 90 minutes before the gate closes.", roles: ["Person who wants to leave","Person who wants to stay — and talk"] },
+  { text: "You discover mid-trip that your travel companion has been secretly planning to extend the trip by a week without telling you.", roles: ["The one who planned it","The one who just found out"] },
+  { text: "You're sharing a hostel room with a stranger. It's 1am, you have a 6am flight. They are very much awake and very much want to talk.", roles: ["The traveller who needs sleep","The very awake stranger"] },
+  { text: "You've just found out that your closest friend told other people something you shared in confidence.", roles: ["The one who found out","The friend who told people"] },
+  { text: "You missed your connection because your travel partner insisted on stopping to eat. They don't seem to think it's their fault.", roles: ["The one who missed the flight","The one who wanted to eat"] },
+  { text: "You're at border control. The officer is asking confusing questions. Your travel companion keeps giving different answers.", roles: ["Traveller A","Border control officer"] },
+  { text: "Your friend promised to cover your accommodation costs for the trip. Now they're saying they didn't actually say that.", roles: ["The one who remembers the promise","The one who says it never happened"] },
+  { text: "You've been away together two weeks and you've realised you find this person genuinely irritating. Four days left.", roles: ["Person A — done pretending","Person B — just noticed something is wrong"] },
+  { text: "You're meeting an ex for the first time since you broke up. You told everyone this was fine. It isn't fine.", roles: ["The one who said it was fine","The one who can tell it isn't"] }
 ];
 
-const COMPLICATIONS = [
-  "⚡ You've just received a message that changes everything. React.",
-  "😢 One of you is about to cry. Don't hide it.",
-  "📱 Your phone rings. It's someone you weren't expecting. You answer.",
-  "🤥 You realise the other person just told you a lie. You're almost certain.",
-  "💸 You've just found out you have half the money you thought you had.",
-  "👀 Someone you both know has just walked past and definitely saw you.",
-  "🔄 Switch sides — argue the opposite position for 60 seconds.",
-  "🤐 One of you must say nothing for the next 30 seconds. React only with expressions.",
-  "📝 One of you has been keeping score of everything the other has done wrong. It comes out now.",
-  "✈️ You have exactly five minutes before one of you has to leave. Permanently."
+// Private objectives — written to create sincerity, not comedy
+const OBJECTIVES_A = [
+  "You are hiding something important. You don't plan to say what it is.",
+  "You already know how this conversation ends. You're stalling.",
+  "You are angrier than you're showing. Keep it underneath.",
+  "You are about to change your mind — but not yet.",
+  "You care more about this person than you want to admit.",
+  "You already made a decision before this conversation started.",
+  "You are trying to make the other person say something first.",
+  "There is something you almost say three times but don't.",
+  "You want to leave. But you keep finding reasons to stay.",
+  "You are not being entirely honest about how you feel."
 ];
 
-// Updated criteria — emotionally honest
+const OBJECTIVES_B = [
+  "You need the other person to understand something they keep missing.",
+  "You've heard this argument before. This time feels different.",
+  "You are waiting for an apology that probably won't come.",
+  "You want to forgive them. You're not ready yet.",
+  "You are pretending to be calmer than you are.",
+  "You know you said something wrong earlier. You haven't admitted it.",
+  "You are trying to figure out if this person still trusts you.",
+  "Something they just said hurt more than you let on.",
+  "You're deciding whether this relationship is worth the effort.",
+  "You are giving them one more chance without saying so."
+];
+
+// Private complications — asymmetric, one per performer
+const PRIV_COMP_A = [
+  "You just got a message. It changes your position. Don't show it.",
+  "You realise you were wrong about something. Don't admit it yet.",
+  "You suddenly feel like walking away. Don't — but feel it.",
+  "Something the other person said just hurt you. Hide it.",
+  "You have five minutes. After that, you're leaving no matter what."
+];
+
+const PRIV_COMP_B = [
+  "You realise the other person is lying. Don't accuse them directly.",
+  "You just decided something. You're not going to say it out loud.",
+  "You feel responsible for this situation. That feeling just got stronger.",
+  "You want to apologise. Something is stopping you.",
+  "You've just understood something about this person you didn't before."
+];
+
+// Audience interventions — one at a time, single use
+const INTERVENTIONS = [
+  "Step in. Say one thing you've been thinking.",
+  "Ask one question neither of them has asked.",
+  "Tell one of them what you actually think they should do.",
+  "Say the thing they're both avoiding.",
+  "Tell them what this looks like from the outside."
+];
+
 const CRITERIA = [
-  { id: "c1", name: "Did this feel real?" },
-  { id: "c2", name: "Who communicated better?" },
-  { id: "c3", name: "Would you watch this if it was a TV show?" }
+  { id:"c1", name:"Did this feel real?" },
+  { id:"c2", name:"Who communicated better?" },
+  { id:"c3", name:"Would you watch this as a TV show?" }
 ];
 
 // ── STATE ────────────────────────────────────────────────────────
-let currentRoom = null;
-let timerInterval = null;
-let timerSeconds = 180;
-let timerRunning = false;
-let studentVotes = {};
-let hasVoted = false;
-let currentRound = 0;
+let room = null, myId = null, myName = null;
+let timerInt = null, timerSec = 180, timerOn = false;
+let votes = {}, hasVoted = false, round = 0;
+let pool = [];
+let intvUsed = false; // per student, per round
 
 // ── FIREBASE ─────────────────────────────────────────────────────
-function waitForFirebase(fn) {
-  if (window._firebaseReady) fn();
-  else document.addEventListener('firebaseReady', fn, { once: true });
-}
-function dbRef(path) { return window._ref(window._db, path); }
+function waitFB(fn){ if(window._firebaseReady)fn(); else document.addEventListener('firebaseReady',fn,{once:true}); }
+function r(path){ return window._ref(window._db, path); }
+function fset(path,val){ return window._set(r(path),val); }
+function fget(path){ return window._get(r(path)); }
+function fon(path,cb){ return window._onValue(r(path),cb); }
 
 // ── NAV ──────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
 // ── TEACHER SETUP ────────────────────────────────────────────────
-function setupRoom() {
-  const code = document.getElementById('setup-code-input').value.trim().toUpperCase();
-  if (code.length !== 4) { showErr('setup-error', 'Please enter exactly 4 letters'); return; }
-  waitForFirebase(() => {
-    window._set(dbRef(`rooms/${code}`), { voting: false, round: 0, scenario: '', votes: {}, complication: '' })
-      .then(() => {
-        currentRoom = code;
-        document.getElementById('teacher-room-display').textContent = code;
-        renderCriteriaResults();
-        listenToVotes();
-        showScreen('screen-teacher');
-      });
-  });
-}
-
-// ── STUDENT JOIN ─────────────────────────────────────────────────
-function joinRoom() {
-  const code = document.getElementById('join-code-input').value.trim().toUpperCase();
-  if (code.length !== 4) { showErr('join-error', 'Enter a 4-letter code'); return; }
-  waitForFirebase(() => {
-    window._get(dbRef(`rooms/${code}`)).then(snap => {
-      if (!snap.exists()) { showErr('join-error', 'Room not found — check the code'); return; }
-      currentRoom = code;
-      hasVoted = false;
-      document.getElementById('student-room-display').textContent = code;
-      document.getElementById('student-join').classList.add('hidden');
-      listenToVotingState();
-      listenToComplication();
+function setupRoom(){
+  const code = document.getElementById('setup-code').value.trim().toUpperCase();
+  if(code.length!==4){ showErr('setup-err','Please enter exactly 4 letters'); return; }
+  waitFB(()=>{
+    fset(`rooms/${code}`,{voting:false,round:0,scenario:'',votes:{},performers:{},students:{},complication:'',intervention:''})
+    .then(()=>{
+      room=code;
+      document.getElementById('t-room-code').textContent=code;
+      renderResults();
+      fon(`rooms/${room}/students`, updateRoster);
+      fon(`rooms/${room}/votes`, snap=>updateResults(snap.val()||{}));
+      showScreen('screen-teacher');
     });
   });
 }
 
-function listenToVotingState() {
-  window._onValue(dbRef(`rooms/${currentRoom}/voting`), snap => {
-    const isOpen = snap.val();
-    if (isOpen && !hasVoted) showStudentVoteForm();
-    else if (!isOpen) { hasVoted = false; showStudentWaiting(); }
-  });
-  window._onValue(dbRef(`rooms/${currentRoom}/round`), snap => {
-    const r = snap.val();
-    if (r !== currentRound) {
-      currentRound = r;
-      hasVoted = false;
-      studentVotes = {};
-      document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('lit'));
-    }
-  });
-}
-
-function listenToComplication() {
-  window._onValue(dbRef(`rooms/${currentRoom}/complication`), snap => {
-    const text = snap.val() || '';
-    const showWait = document.getElementById('student-complication');
-    const showVote = document.getElementById('student-complication-vote');
-    if (text) {
-      [showWait, showVote].forEach(el => { el.classList.add('show'); el.classList.remove('hidden'); });
-      document.getElementById('student-complication-text').textContent = text;
-      document.getElementById('student-complication-vote-text').textContent = text;
-    } else {
-      [showWait, showVote].forEach(el => { el.classList.remove('show'); el.classList.add('hidden'); });
-    }
+// ── ROSTER ───────────────────────────────────────────────────────
+function updateRoster(snap){
+  const students = snap.val()||{};
+  const ids = Object.keys(students);
+  document.getElementById('roster-count').textContent=`(${ids.length})`;
+  const list = document.getElementById('roster-list');
+  if(!ids.length){ list.innerHTML='<div class="roster-empty">Waiting for students…</div>'; return; }
+  fget(`rooms/${room}/performers`).then(ps=>{
+    const perf = ps.val()||{};
+    list.innerHTML = ids.map(id=>{
+      const name = students[id].name||'?';
+      const role = perf[id]||'—';
+      const hot = role!=='audience'&&role!=='—';
+      return `<div class="ri ${hot?'on':'off'}"><span class="ri-name">${name}</span><span class="ri-role ${hot?'hot':''}">${role}</span></div>`;
+    }).join('');
   });
 }
 
-function showStudentWaiting() {
-  document.getElementById('student-waiting').classList.remove('hidden');
-  document.getElementById('student-vote').classList.add('hidden');
-  document.getElementById('student-voted').classList.add('hidden');
+// ── STUDENT JOIN ─────────────────────────────────────────────────
+function joinRoom(){
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  const name = document.getElementById('join-name').value.trim();
+  if(code.length!==4){ showErr('join-err','Enter a 4-letter code'); return; }
+  if(!name){ showErr('join-err','Enter your name'); return; }
+  waitFB(()=>{
+    fget(`rooms/${code}`).then(snap=>{
+      if(!snap.exists()){ showErr('join-err','Room not found'); return; }
+      room=code; myName=name;
+      const ref = window._push(r(`rooms/${code}/students`));
+      myId = ref.key;
+      window._set(ref,{name}).then(()=>{
+        document.getElementById('s-room-code').textContent=code;
+        document.getElementById('s-join').classList.add('hidden');
+        showSWaiting();
+        listenStudent();
+      });
+    });
+  });
 }
 
-function showStudentVoteForm() {
-  buildStudentCriteriaBlocks();
-  document.getElementById('student-waiting').classList.add('hidden');
-  document.getElementById('student-vote').classList.remove('hidden');
-  document.getElementById('student-voted').classList.add('hidden');
+function listenStudent(){
+  // role assignment
+  fon(`rooms/${room}/performers/${myId}`, snap=>{
+    const role=snap.val();
+    if(!role) return;
+    fget(`rooms/${room}/scenario`).then(ss=>{
+      if(role==='audience') showSAudience();
+      else showSPerforming(role, ss.val()||'');
+    });
+  });
+  // voting
+  fon(`rooms/${room}/voting`, snap=>{
+    if(snap.val()&&!hasVoted) showSVote();
+  });
+  // new round reset
+  fon(`rooms/${room}/round`, snap=>{
+    const nr=snap.val();
+    if(nr!==round&&nr>0){ round=nr; hasVoted=false; votes={}; intvUsed=false; }
+  });
+  // private complication
+  fon(`rooms/${room}/privcomp/${myId}`, snap=>{
+    const t=snap.val()||'';
+    const el=document.getElementById('s-priv-comp');
+    if(t){ el.classList.remove('hidden'); el.classList.add('show'); document.getElementById('s-priv-comp-text').textContent=t; }
+    else{ el.classList.remove('show'); el.classList.add('hidden'); }
+  });
+  // intervention unlock
+  fon(`rooms/${room}/intervention_open`, snap=>{
+    const open=snap.val();
+    const btn=document.getElementById('s-intv-btn');
+    if(open&&!intvUsed){ btn.classList.remove('hidden'); btn.disabled=false; }
+    else{ btn.classList.add('hidden'); }
+  });
+  // intervention broadcast
+  fon(`rooms/${room}/intervention`, snap=>{
+    const t=snap.val()||'';
+    ['s-intv-perf','s-intv-aud'].forEach(id=>{
+      const el=document.getElementById(id);
+      const txt=document.getElementById(id+'-text');
+      if(t){ el.classList.remove('hidden'); el.classList.add('show'); txt.textContent=t; }
+      else{ el.classList.remove('show'); el.classList.add('hidden'); }
+    });
+  });
 }
 
-function buildStudentCriteriaBlocks() {
-  document.getElementById('student-criteria-blocks').innerHTML = CRITERIA.map(c => `
-    <div class="vote-criterion">
+function showSWaiting(){ hideAll(['s-waiting']); }
+function showSAudience(){ hideAll(['s-audience']); }
+function showSPerforming(role,scenario){
+  hideAll(['s-performing']);
+  document.getElementById('s-role-name').textContent=role;
+  document.getElementById('s-scenario-text').textContent=scenario;
+  // assign objective based on position in performers
+  fget(`rooms/${room}/performers`).then(ps=>{
+    const perf=ps.val()||{};
+    const ids=Object.keys(perf).filter(id=>perf[id]!=='audience');
+    const isA = ids[0]===myId;
+    const pool = isA ? OBJECTIVES_A : OBJECTIVES_B;
+    document.getElementById('s-objective').textContent=pool[Math.floor(Math.random()*pool.length)];
+  });
+}
+function showSVote(){ hideAll(['s-vote']); buildCrits(); }
+function hideAll(show){
+  ['s-waiting','s-audience','s-performing','s-vote','s-voted'].forEach(id=>{
+    document.getElementById(id).classList.toggle('hidden', !show.includes(id));
+  });
+}
+
+// ── AUDIENCE INTERVENTION ────────────────────────────────────────
+function audienceIntervene(){
+  if(intvUsed) return;
+  intvUsed=true;
+  const text = INTERVENTIONS[Math.floor(Math.random()*INTERVENTIONS.length)];
+  const label = `${myName}: "${text}"`;
+  fset(`rooms/${room}/intervention`, label);
+  fset(`rooms/${room}/intervention_open`, false);
+  document.getElementById('s-intv-btn').disabled=true;
+  document.getElementById('s-intv-btn').classList.add('hidden');
+}
+
+// ── VOTE ────────────────────────────────────────────────────────
+function buildCrits(){
+  document.getElementById('s-crit-blocks').innerHTML = CRITERIA.map(c=>`
+    <div class="vcrit">
       <div class="vc-name">${c.name}</div>
-      <div class="star-row">
-        ${[1,2,3,4,5].map(n => `<button class="star-btn" data-c="${c.id}" data-v="${n}" onclick="selectStar(this,'${c.id}',${n})">★</button>`).join('')}
-      </div>
+      <div class="srow">${[1,2,3,4,5].map(n=>`<button class="sbtn" data-c="${c.id}" data-v="${n}" onclick="pickStar(this,'${c.id}',${n})">★</button>`).join('')}</div>
     </div>`).join('');
 }
-
-function selectStar(btn, cid, val) {
-  document.querySelectorAll(`.star-btn[data-c="${cid}"]`).forEach(b => b.classList.toggle('lit', parseInt(b.dataset.v) <= val));
-  studentVotes[cid] = val;
+function pickStar(btn,cid,val){
+  document.querySelectorAll(`.sbtn[data-c="${cid}"]`).forEach(b=>b.classList.toggle('lit',parseInt(b.dataset.v)<=val));
+  votes[cid]=val;
 }
-
-function submitVote() {
-  if (Object.keys(studentVotes).length < CRITERIA.length) { showErr('vote-error', 'Please rate all 3 criteria ✨'); return; }
-  const vid = 'v_' + Math.random().toString(36).slice(2,9);
-  window._set(dbRef(`rooms/${currentRoom}/votes/${vid}`), studentVotes).then(() => {
-    hasVoted = true;
-    document.getElementById('student-vote').classList.add('hidden');
-    document.getElementById('student-voted').classList.remove('hidden');
+function submitVote(){
+  if(Object.keys(votes).length<CRITERIA.length){ showErr('vote-err','Rate all 3 ✨'); return; }
+  const vid='v_'+Math.random().toString(36).slice(2,9);
+  fset(`rooms/${room}/votes/${vid}`,votes).then(()=>{
+    hasVoted=true;
+    hideAll(['s-voted']);
   });
 }
 
-// ── TEACHER: ROUND ───────────────────────────────────────────────
-function newRound() {
-  const s = SCENARIOS[Math.floor(Math.random() * SCENARIOS.length)];
-  document.getElementById('scenario-text').textContent = s.text;
-  document.getElementById('scenario-roles').innerHTML = s.roles.map(r => `<div class="scenario-role">${r}</div>`).join('');
-  document.getElementById('complication-display').classList.remove('show');
-  if (currentRoom) {
-    currentRound++;
-    window._set(dbRef(`rooms/${currentRoom}/votes`), {});
-    window._set(dbRef(`rooms/${currentRoom}/round`), currentRound);
-    window._set(dbRef(`rooms/${currentRoom}/voting`), false);
-    window._set(dbRef(`rooms/${currentRoom}/complication`), '');
-  }
-  document.getElementById('btn-open-vote').disabled = false;
-  document.getElementById('btn-close-vote').disabled = true;
-  document.getElementById('btn-complication').disabled = false;
-  updateVoteBadge(false);
-  renderCriteriaResults({});
-  document.getElementById('voter-count').textContent = '0 votes';
-  resetTimer();
+// ── TEACHER CONTROLS ─────────────────────────────────────────────
+function newRound(){
+  if(!room) return;
+  const s=SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)];
+  document.getElementById('sc-text').textContent=s.text;
+  document.getElementById('sc-roles').innerHTML=s.roles.map(r=>`<div class="sc-role">${r}</div>`).join('');
+  document.getElementById('comp-display').classList.remove('show');
+
+  fget(`rooms/${room}/students`).then(snap=>{
+    const students=snap.val()||{};
+    const ids=Object.keys(students);
+    if(ids.length<2){ alert('Need at least 2 students!'); return; }
+
+    if(pool.length<2) pool=[...ids].sort(()=>Math.random()-.5);
+    const p1=pool.shift(), p2=pool.shift();
+
+    const performers={};
+    ids.forEach(id=>{
+      if(id===p1) performers[id]=s.roles[0];
+      else if(id===p2) performers[id]=s.roles[1];
+      else performers[id]='audience';
+    });
+
+    round++;
+    fset(`rooms/${room}/round`,round);
+    fset(`rooms/${room}/scenario`,s.text);
+    fset(`rooms/${room}/votes`,{});
+    fset(`rooms/${room}/voting`,false);
+    fset(`rooms/${room}/complication`,'');
+    fset(`rooms/${room}/intervention`,'');
+    fset(`rooms/${room}/intervention_open`,false);
+    fset(`rooms/${room}/privcomp`,{});
+    fset(`rooms/${room}/performers`,performers);
+
+    // enable controls
+    document.getElementById('btn-comp').disabled=false;
+    document.getElementById('btn-intv').disabled=false;
+    document.getElementById('btn-vote-open').disabled=false;
+    document.getElementById('btn-vote-close').disabled=true;
+    updateVStatus(false);
+    renderResults({});
+    document.getElementById('voter-count').textContent='0 votes';
+    resetTimer();
+  });
 }
 
-function openVoting() {
-  if (!currentRoom) return;
-  window._set(dbRef(`rooms/${currentRoom}/voting`), true);
-  document.getElementById('btn-open-vote').disabled = true;
-  document.getElementById('btn-close-vote').disabled = false;
-  updateVoteBadge(true);
+function firePrivateComplications(){
+  if(!room) return;
+  fget(`rooms/${room}/performers`).then(snap=>{
+    const perf=snap.val()||{};
+    const ids=Object.keys(perf).filter(id=>perf[id]!=='audience');
+    if(ids.length>=1) fset(`rooms/${room}/privcomp/${ids[0]}`, PRIV_COMP_A[Math.floor(Math.random()*PRIV_COMP_A.length)]);
+    if(ids.length>=2) fset(`rooms/${room}/privcomp/${ids[1]}`, PRIV_COMP_B[Math.floor(Math.random()*PRIV_COMP_B.length)]);
+    // also show teacher a generic broadcast label
+    const broadcastNote = "⚡ Private complications sent to both performers";
+    document.getElementById('comp-broadcast-text').textContent=broadcastNote;
+    document.getElementById('comp-display').classList.add('show');
+  });
 }
 
-function closeVoting() {
-  if (!currentRoom) return;
-  window._set(dbRef(`rooms/${currentRoom}/voting`), false);
-  document.getElementById('btn-open-vote').disabled = false;
-  document.getElementById('btn-close-vote').disabled = true;
-  updateVoteBadge(false);
+function fireIntervention(){
+  if(!room) return;
+  fset(`rooms/${room}/intervention_open`, true);
+  fset(`rooms/${room}/intervention`,'');
+  document.getElementById('btn-intv').textContent='🙋 Intervention Unlocked…';
+  document.getElementById('btn-intv').disabled=true;
 }
 
-function updateVoteBadge(open) {
-  const b = document.getElementById('vote-status-badge');
-  b.textContent = open ? '🟢 Voting Open!' : '⛔ Voting Closed';
-  b.className = 'vote-status ' + (open ? 'open' : 'closed');
+function openVoting(){
+  fset(`rooms/${room}/voting`,true);
+  document.getElementById('btn-vote-open').disabled=true;
+  document.getElementById('btn-vote-close').disabled=false;
+  updateVStatus(true);
+}
+function closeVoting(){
+  fset(`rooms/${room}/voting`,false);
+  document.getElementById('btn-vote-open').disabled=false;
+  document.getElementById('btn-vote-close').disabled=true;
+  updateVStatus(false);
+}
+function updateVStatus(open){
+  const b=document.getElementById('vstatus');
+  b.textContent=open?'🟢 Voting Open!':'⛔ Voting Closed';
+  b.className='vstatus '+(open?'open':'closed');
 }
 
-function fireComplication() {
-  const text = COMPLICATIONS[Math.floor(Math.random() * COMPLICATIONS.length)];
-  document.getElementById('complication-text').textContent = text;
-  document.getElementById('complication-display').classList.add('show');
-  if (currentRoom) window._set(dbRef(`rooms/${currentRoom}/complication`), text);
+// ── RESULTS ──────────────────────────────────────────────────────
+function updateResults(obj){
+  const list=Object.values(obj);
+  document.getElementById('voter-count').textContent=`${list.length} vote${list.length!==1?'s':''}`;
+  const t={};
+  CRITERIA.forEach(c=>{ t[c.id]=[0,0,0,0,0]; });
+  list.forEach(v=>CRITERIA.forEach(c=>{ if(v[c.id]) t[c.id][v[c.id]-1]++; }));
+  renderResults(t);
 }
 
-// ── TEACHER: RESULTS ─────────────────────────────────────────────
-function listenToVotes() {
-  window._onValue(dbRef(`rooms/${currentRoom}/votes`), snap => updateResults(snap.val() || {}));
-}
-
-function updateResults(votesObj) {
-  const list = Object.values(votesObj);
-  document.getElementById('voter-count').textContent = `${list.length} vote${list.length !== 1 ? 's' : ''}`;
-  const tallies = {};
-  CRITERIA.forEach(c => { tallies[c.id] = [0,0,0,0,0]; });
-  list.forEach(v => { CRITERIA.forEach(c => { if (v[c.id]) tallies[c.id][v[c.id]-1]++; }); });
-  renderCriteriaResults(tallies, list.length);
-}
-
-function renderCriteriaResults(tallies) {
-  const container = document.getElementById('criteria-results');
-  if (!tallies) {
-    container.innerHTML = CRITERIA.map(c => `
-      <div class="criterion">
-        <div class="criterion-name">${c.name}</div>
-        <div class="stars-bar">${[1,2,3,4,5].map(n=>`<div class="star-pill s${n}">★${n}</div><div class="star-count">–</div>`).join('')}<div class="avg-score">–</div></div>
-      </div>`).join('');
-    return;
-  }
-  container.innerHTML = CRITERIA.map(c => {
-    const t = tallies[c.id] || [0,0,0,0,0];
-    const sum = t.reduce((a,v,i) => a+v*(i+1), 0);
-    const count = t.reduce((a,v) => a+v, 0);
-    const avg = count > 0 ? (sum/count).toFixed(1) : '–';
-    return `
-      <div class="criterion">
-        <div class="criterion-name">${c.name}</div>
-        <div class="stars-bar">${t.map((n,i)=>`<div class="star-pill s${i+1}" style="min-width:${24+n*7}px">★${i+1}</div><div class="star-count">${n}</div>`).join('')}<div class="avg-score">${avg}</div></div>
-      </div>`;
+function renderResults(t){
+  const el=document.getElementById('results-container');
+  if(!t){ el.innerHTML=CRITERIA.map(c=>`<div class="crit"><div class="crit-name">${c.name}</div><div class="sbar">${[1,2,3,4,5].map(n=>`<div class="spill s${n}">★${n}</div><div class="scnt">–</div>`).join('')}<div class="avg">–</div></div></div>`).join(''); return; }
+  el.innerHTML=CRITERIA.map(c=>{
+    const d=t[c.id]||[0,0,0,0,0];
+    const sum=d.reduce((a,v,i)=>a+v*(i+1),0);
+    const cnt=d.reduce((a,v)=>a+v,0);
+    const avg=cnt>0?(sum/cnt).toFixed(1):'–';
+    return `<div class="crit"><div class="crit-name">${c.name}</div><div class="sbar">${d.map((n,i)=>`<div class="spill s${i+1}" style="min-width:${24+n*7}px">★${i+1}</div><div class="scnt">${n}</div>`).join('')}<div class="avg">${avg}</div></div></div>`;
   }).join('');
 }
 
 // ── TIMER ────────────────────────────────────────────────────────
-function startTimer(s) {
-  clearInterval(timerInterval); timerSeconds = s; timerRunning = true; updateTimerDisplay();
-  timerInterval = setInterval(() => { if (timerSeconds <= 0) { clearInterval(timerInterval); timerRunning = false; return; } timerSeconds--; updateTimerDisplay(); }, 1000);
-}
-function pauseTimer() {
-  if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
-  else if (timerSeconds > 0) { timerRunning = true; timerInterval = setInterval(() => { if (!timerSeconds) { clearInterval(timerInterval); return; } timerSeconds--; updateTimerDisplay(); }, 1000); }
-}
-function resetTimer() { clearInterval(timerInterval); timerRunning = false; timerSeconds = 180; updateTimerDisplay(); }
-function updateTimerDisplay() {
-  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
-  const el = document.getElementById('timer-display');
-  el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-  el.classList.toggle('warn', timerSeconds <= 30 && timerSeconds > 0);
-}
+function startTimer(s){ clearInterval(timerInt);timerSec=s;timerOn=true;updTimer();timerInt=setInterval(()=>{if(timerSec<=0){clearInterval(timerInt);timerOn=false;return;}timerSec--;updTimer();},1000);}
+function pauseTimer(){ if(timerOn){clearInterval(timerInt);timerOn=false;}else if(timerSec>0){timerOn=true;timerInt=setInterval(()=>{if(!timerSec){clearInterval(timerInt);return;}timerSec--;updTimer();},1000);} }
+function resetTimer(){ clearInterval(timerInt);timerOn=false;timerSec=180;updTimer(); }
+function updTimer(){ const m=Math.floor(timerSec/60),s=timerSec%60;const el=document.getElementById('timer-disp');el.textContent=`${m}:${s.toString().padStart(2,'0')}`;el.classList.toggle('warn',timerSec<=30&&timerSec>0); }
 
 // ── UTILS ────────────────────────────────────────────────────────
-function toggleScaffold() { document.getElementById('scaffold-panel').classList.toggle('open'); }
-function showErr(id, msg) {
-  const el = document.getElementById(id); el.textContent = msg; el.classList.remove('hidden');
-  setTimeout(() => el.classList.add('hidden'), 3000);
-}
+function toggleScaffold(){ document.getElementById('scaf-panel').classList.toggle('open'); }
+function showErr(id,msg){ const el=document.getElementById(id);el.textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3000); }
 
-renderCriteriaResults();
+renderResults();
 </script>
 </body>
 </html>
